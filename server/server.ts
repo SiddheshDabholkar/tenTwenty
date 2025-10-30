@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import { FRONTEND_URL, MONGO_URI, PORT } from "./constant/envs";
 import cors from "cors";
+import routes from "./routes";
 
 const app = express();
 
@@ -14,11 +15,7 @@ app.use(
   })
 );
 
-app.get("/api/health", (_, res) => {
-  res.json({
-    message: "Hello",
-  });
-});
+app.use("/api", routes);
 
 mongoose
   .connect(MONGO_URI!)

@@ -1,9 +1,13 @@
 import { Schema, model } from "mongoose";
-import { QUESTIONS_TYPES, SCHEMAS } from "../constant/enums";
+import { USER_ROLE, SCHEMAS } from "../constant/enums";
 
 const userSchema = new Schema(
   {
-    name: {
+    firstName: {
+      type: String,
+      required: true,
+    },
+    lastName: {
       type: String,
       required: true,
     },
@@ -18,7 +22,7 @@ const userSchema = new Schema(
     },
     role: {
       type: String,
-      enum: QUESTIONS_TYPES,
+      enum: USER_ROLE,
       required: true,
     },
   },
