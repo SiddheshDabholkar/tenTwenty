@@ -64,7 +64,7 @@ const Prizes = () => {
       search: debouncedSearch,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedSearch, status]);
+  }, [debouncedSearch]);
 
   return (
     <div>

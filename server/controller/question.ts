@@ -2,6 +2,8 @@ import type { Request, Response } from "express";
 import { formatResponse } from "../utils/common";
 import { QUESTION_MESSAGES } from "../constant/message";
 import { Question } from "../models/Question";
+import { AnswerOption } from "../models/AnswerOption";
+import { QUESTIONS_TYPES } from "../constant/enums";
 
 const createQuestion = async (req: Request, res: Response) => {
   const { question, type, options } = req.body;
@@ -10,10 +12,10 @@ const createQuestion = async (req: Request, res: Response) => {
   const newQuestion = await Question.create({
     question,
     type,
-    options,
     createdBy: userId,
     updatedBy: userId,
   });
+
   if (!newQuestion) {
     return res.status(400).json(
       formatResponse({
@@ -23,17 +25,36 @@ const createQuestion = async (req: Request, res: Response) => {
       })
     );
   }
+
+  const answerOptions = await AnswerOption.insertMany(
+    options.map((o: any) => ({
+      ...o,
+      createdBy: userId,
+      updatedBy: userId,
+      questionId: newQuestion._id,
+    }))
+  );
+
+  const updatedQuestion = await Question.findByIdAndUpdate(
+    newQuestion._id,
+    {
+      options: answerOptions.map((o) => o._id),
+    },
+    { new: true }
+  );
+
   return res.status(200).json(
     formatResponse({
       message: QUESTION_MESSAGES.QUESTION_CREATE_SUCCESS,
-      data: newQuestion,
+      data: updatedQuestion,
       success: true,
     })
   );
 };
 
 const updateQuestion = async (req: Request, res: Response) => {
-  const { _id } = req.body;
+  const { _id, question, type, options } = req.body;
+  const userId = req?.user?._id;
   if (!_id) {
     return res.status(400).json(
       formatResponse({
@@ -43,9 +64,68 @@ const updateQuestion = async (req: Request, res: Response) => {
       })
     );
   }
-  const updatedQuestion = await Question.findByIdAndUpdate(_id, req.body, {
-    new: true,
-  });
+
+  if (type === QUESTIONS_TYPES.SWITCH) {
+    await AnswerOption.deleteMany({ questionId: _id });
+    const updatedInfo = await AnswerOption.insertMany(
+      options.map((o: any) => ({
+        ...o,
+        createdBy: userId,
+        updatedBy: userId,
+        questionId: _id,
+      }))
+    );
+    const updatedQuestion = await Question.findByIdAndUpdate(
+      _id,
+      {
+        question,
+        type,
+        updatedBy: userId,
+        options: updatedInfo.map((o) => o._id),
+      },
+      {
+        new: true,
+      }
+    );
+    if (!updatedQuestion) {
+      return res.status(400).json(
+        formatResponse({
+          message: QUESTION_MESSAGES.QUESTION_UPDATE_FAILED,
+          data: null,
+          success: false,
+        })
+      );
+    }
+    return res.status(200).json(
+      formatResponse({
+        message: QUESTION_MESSAGES.QUESTION_UPDATE_SUCCESS,
+        data: updatedQuestion,
+        success: true,
+      })
+    );
+  } else {
+    options.forEach(async (o: any) => {
+      if (o._id) {
+        await AnswerOption.findByIdAndUpdate(o._id, {
+          option: o.option,
+          isCorrect: o.isCorrect,
+          updatedBy: userId,
+        });
+      }
+    });
+  }
+
+  const updatedQuestion = await Question.findByIdAndUpdate(
+    _id,
+    {
+      question,
+      type,
+      updatedBy: userId,
+    },
+    {
+      new: true,
+    }
+  );
   if (!updatedQuestion) {
     return res.status(400).json(
       formatResponse({
@@ -105,7 +185,7 @@ const getQuestion = async (req: Request, res: Response) => {
       })
     );
   }
-  const question = await Question.findById(id);
+  const question = await Question.findById(id).populate("options");
   if (!question) {
     return res.status(400).json(
       formatResponse({

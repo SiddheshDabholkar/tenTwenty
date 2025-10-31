@@ -12,7 +12,7 @@ const router = express.Router();
 router.post("/trigger", triggerSubmission);
 router.put("/update", updateSubmission);
 router.get("/:id", getSubmission);
-router.get("/all", getAllSubmission);
+router.get("/get/all", getAllSubmission);
 router.delete("/delete/:id", deleteSubmission);
 
 export default router;
