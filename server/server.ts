@@ -4,6 +4,7 @@ import { FRONTEND_URL, MONGO_URI, PORT } from "./constant/envs";
 import cors from "cors";
 import routes from "./routes";
 import { errorMiddleware } from "./middleware/error";
+import { initContestScheduler } from "./utils/contestScheduler";
 
 const app = express();
 
@@ -24,6 +25,7 @@ mongoose
   .connect(MONGO_URI!)
   .then(() => {
     console.log("Connected to MongoDB");
+    initContestScheduler();
     app.listen(PORT, () => {
       console.log("Listening on port", PORT);
     });

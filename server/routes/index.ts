@@ -5,6 +5,7 @@ import userRoutes from "./user";
 import questionRoutes from "./question";
 import contestRoutes from "./contest";
 import prizeRoutes from "./prize";
+import submissionRoutes from "./submission";
 
 import { adminMiddleware } from "../middleware/role";
 import { authMiddleware } from "../middleware/auth";
@@ -20,5 +21,6 @@ router.use("/user", userRoutes);
 router.use("/question", authMiddleware, adminMiddleware, questionRoutes);
 router.use("/prize", authMiddleware, adminMiddleware, prizeRoutes);
 router.use("/contest", contestRoutes);
+router.use("/submission", authMiddleware, submissionRoutes);
 
 export default router;

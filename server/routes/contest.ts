@@ -5,6 +5,7 @@ import {
   getContest,
   updateContest,
   deleteContest,
+  processContestEnd,
 } from "../controller/contest";
 import { authMiddleware } from "../middleware/auth";
 import { adminMiddleware } from "../middleware/role";
@@ -16,5 +17,11 @@ router.put("/update", authMiddleware, adminMiddleware, updateContest);
 router.get("/:id", getContest);
 router.get("/all", authMiddleware, adminMiddleware, getAllContest);
 router.delete("/delete/:id", authMiddleware, adminMiddleware, deleteContest);
+router.post(
+  "/process-end/:id",
+  authMiddleware,
+  adminMiddleware,
+  processContestEnd
+);
 
 export default router;

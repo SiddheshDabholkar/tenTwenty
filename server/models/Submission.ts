@@ -43,7 +43,6 @@ const submissionSchema = new Schema(
     },
     submittedAt: {
       type: Date,
-      required: true,
     },
     contestOpenedAt: {
       type: Date,
@@ -54,6 +53,6 @@ const submissionSchema = new Schema(
 );
 
 export const Submission = model<SubmissionType>(
-  SCHEMAS.QUESTION,
+  SCHEMAS.SUBMISSION,
   submissionSchema
 );

@@ -3,6 +3,7 @@ import { formatResponse } from "../utils/common";
 import { Contest } from "../models/Contest";
 import { CONTEST_MESSAGES } from "../constant/message";
 import { Request, Response } from "express";
+import { handleContestEnd } from "../services/contestScheduler";
 
 const createContest = async (req: Request, res: Response) => {
   const {
@@ -173,10 +174,43 @@ const deleteContest = async (req: Request, res: Response) => {
   );
 };
 
+const processContestEnd = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  if (!id) {
+    return res.status(400).json(
+      formatResponse({
+        message: CONTEST_MESSAGES.CONTEST_ID_REQUIRED,
+        data: null,
+        success: false,
+      })
+    );
+  }
+
+  try {
+    await handleContestEnd(id);
+    return res.status(200).json(
+      formatResponse({
+        message: "Contest end processed successfully",
+        data: null,
+        success: true,
+      })
+    );
+  } catch (error) {
+    return res.status(500).json(
+      formatResponse({
+        message: "Failed to process contest end",
+        data: null,
+        success: false,
+      })
+    );
+  }
+};
+
 export {
   createContest,
   getContest,
   getAllContest,
   updateContest,
   deleteContest,
+  processContestEnd,
 };
