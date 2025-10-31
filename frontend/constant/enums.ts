@@ -10,4 +10,8 @@ enum USER_ROLE {
   NORMAL = "normal",
 }
 
-export { QUESTIONS_TYPES, USER_ROLE };
+enum LOCAL_KEYS {
+  USER_DATA = "user_data",
+}
+
+export { QUESTIONS_TYPES, USER_ROLE, LOCAL_KEYS };

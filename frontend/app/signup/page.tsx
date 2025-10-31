@@ -7,15 +7,14 @@ import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Spinner } from "@/components/ui/spinner";
+import useAuth from "@/hooks/useAuth";
 
 const SignupPage = () => {
-  const [isSigningUp, setIsSigningUp] = useState(false);
+  const { handleRegister, isRegistering } = useAuth();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const handleSignup = async () => {};
 
   return (
     <AuthLayout>
@@ -80,11 +79,18 @@ const SignupPage = () => {
             </FieldSet>
             <div className="flex flex-col items-center">
               <Button
-                onClick={handleSignup}
+                onClick={() => {
+                  handleRegister({
+                    email,
+                    firstName,
+                    lastName,
+                    password,
+                  });
+                }}
                 type="button"
                 className="w-full cursor-pointer"
               >
-                {isSigningUp ? (
+                {isRegistering ? (
                   <>
                     <Spinner />
                     Creating...

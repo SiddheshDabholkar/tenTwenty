@@ -1,5 +1,9 @@
+import { englishMessage } from "@/lang/en";
+
 type Maybe<T> = T | null | undefined;
 type MaybeArray<T> = T | T[];
 type MaybeString<T> = Maybe<T | string>;
 
-export type { Maybe, MaybeArray, MaybeString };
+type TranslateKey = keyof typeof englishMessage;
+
+export type { Maybe, MaybeArray, MaybeString, TranslateKey };

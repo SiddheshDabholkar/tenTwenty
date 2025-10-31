@@ -7,16 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Spinner } from "@/components/ui/spinner";
+import useAuth from "@/hooks/useAuth";
 
 const LoginPage = () => {
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter();
-
-  const handleLogin = () => {};
+  const { handleLogin, isLoggingIn } = useAuth();
 
   return (
     <AuthLayout>
@@ -57,7 +54,12 @@ const LoginPage = () => {
             </FieldSet>
             <div className="flex flex-col items-center">
               <Button
-                onClick={handleLogin}
+                onClick={() => {
+                  handleLogin({
+                    email,
+                    password,
+                  });
+                }}
                 type="button"
                 className="w-full cursor-pointer"
               >
