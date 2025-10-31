@@ -1,26 +1,8 @@
-import express from "express";
-import {
-  createContest,
-  getAllContest,
-  getContest,
-  updateContest,
-  deleteContest,
-} from "../controller/contest";
-
-const router = express.Router();
-
-router.post("/create", createContest);
-router.put("/update", updateContest);
-router.get("/:id", getContest);
-router.get("/all", getAllContest);
-router.delete("/delete/:id", deleteContest);
-
-export default router;
-
 import { validateCreateContestPayload } from "../utils/validation";
 import { formatResponse } from "../utils/common";
 import { Contest } from "../models/Contest";
 import { CONTEST_MESSAGES } from "../constant/message";
+import { Request, Response } from "express";
 
 const createContest = async (req: Request, res: Response) => {
   const {
