@@ -6,13 +6,15 @@ import {
   updateContest,
   deleteContest,
 } from "../controller/contest";
+import { authMiddleware } from "../middleware/auth";
+import { adminMiddleware } from "../middleware/role";
 
 const router = express.Router();
 
-router.post("/create", createContest);
-router.put("/update", updateContest);
+router.post("/create", authMiddleware, adminMiddleware, createContest);
+router.put("/update", authMiddleware, adminMiddleware, updateContest);
 router.get("/:id", getContest);
-router.get("/all", getAllContest);
-router.delete("/delete/:id", deleteContest);
+router.get("/all", authMiddleware, adminMiddleware, getAllContest);
+router.delete("/delete/:id", authMiddleware, adminMiddleware, deleteContest);
 
 export default router;

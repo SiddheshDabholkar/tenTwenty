@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import { FRONTEND_URL, MONGO_URI, PORT } from "./constant/envs";
 import cors from "cors";
 import routes from "./routes";
+import { errorMiddleware } from "./middleware/error";
 
 const app = express();
 
@@ -14,6 +15,8 @@ app.use(
     credentials: true,
   })
 );
+
+app.use(errorMiddleware);
 
 app.use("/api", routes);
 

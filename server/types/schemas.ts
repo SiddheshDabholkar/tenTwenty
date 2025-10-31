@@ -9,6 +9,7 @@ type UserType = Document &
     email: string;
     password: string;
     role: USER_ROLE;
+    token: string;
   };
 
 type ContestType = Document &
