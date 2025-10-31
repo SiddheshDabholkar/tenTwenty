@@ -11,7 +11,7 @@ const PrizeCard: PrizeCardProps = ({ data }) => {
   return (
     <Link href={`/dashboard/prizes/edit/${data._id}`}>
       <Card className="w-full flex flex-row items-center p-4 gap-4 shadow-none">
-        <span className="bg-blue-300 p-3 h-12 w-12 rounded-full">
+        <span className="bg-blue-100 p-3 h-12 w-12 rounded-full">
           <Trophy />
         </span>
         <div>

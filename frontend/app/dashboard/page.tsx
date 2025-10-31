@@ -26,7 +26,6 @@ const Dashboard = () => {
         Let’s make today productive — here’s what’s happening on your dashboard.
       </p>
       <QuickActions />
-      <YourContests />
     </div>
   );
 };
