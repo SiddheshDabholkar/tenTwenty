@@ -11,6 +11,16 @@ const prizeSchema = new Schema(
     },
     title: String,
     description: String,
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: SCHEMAS.USER,
+      required: true,
+    },
+    updatedBy: {
+      type: Schema.Types.ObjectId,
+      ref: SCHEMAS.USER,
+      required: true,
+    },
   },
   { timestamps: true }
 );
