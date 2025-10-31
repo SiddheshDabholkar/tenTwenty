@@ -3,20 +3,20 @@ import { ShieldQuestionMark, Trophy, Gamepad2 } from "lucide-react";
 const quickActionsList = [
   {
     id: 1,
-    name: "Create Contest",
-    href: "/dashboard/contests/create",
+    name: "Contests",
+    href: "/dashboard/contests",
     icon: Gamepad2,
   },
   {
     id: 2,
-    name: "Create Question",
-    href: "/dashboard/question/create",
+    name: "Questions",
+    href: "/dashboard/questions",
     icon: ShieldQuestionMark,
   },
   {
     id: 3,
-    name: "Create Prize",
-    href: "/dashboard/prize/create",
+    name: "Prizes",
+    href: "/dashboard/prizes",
     icon: Trophy,
   },
 ];

@@ -1,7 +1,7 @@
 import { englishMessage } from "@/lang/en";
 
 type Maybe<T> = T | null | undefined;
-type MaybeArray<T> = T | T[];
+type MaybeArray<T> = [] | T[];
 type MaybeString<T> = Maybe<T | string>;
 
 type TranslateKey = keyof typeof englishMessage;

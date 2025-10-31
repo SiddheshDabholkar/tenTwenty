@@ -4,11 +4,6 @@ import { PrizeType } from "../types/schemas";
 
 const prizeSchema = new Schema(
   {
-    contestId: {
-      type: Schema.Types.ObjectId,
-      ref: SCHEMAS.CONTEST,
-      required: true,
-    },
     title: String,
     description: String,
     createdBy: {

@@ -3,7 +3,7 @@ import { formatResponse } from "../utils/common";
 import { Contest } from "../models/Contest";
 import { CONTEST_MESSAGES } from "../constant/message";
 import { Request, Response } from "express";
-import { handleContestEnd } from "../services/contestScheduler";
+import { handleContestEnd } from "../utils/contestScheduler";
 
 const createContest = async (req: Request, res: Response) => {
   const {

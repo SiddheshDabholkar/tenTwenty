@@ -4,11 +4,10 @@ import { PRIZE_MESSAGES } from "../constant/message";
 import { Prize } from "../models/Prize";
 
 const createPrize = async (req: Request, res: Response) => {
-  const { contestId, title, description } = req.body;
+  const { title, description } = req.body;
   const userId = req?.user?._id;
 
   const newPrize = await Prize.create({
-    contestId,
     title,
     description,
     createdBy: userId,

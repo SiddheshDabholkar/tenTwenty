@@ -43,7 +43,6 @@ type QuestionType = Document &
 
 type PrizeType = Document &
   TimeStampsAndId & {
-    contestId: MaybeString<ContestType>;
     title: string;
     description: string;
   };

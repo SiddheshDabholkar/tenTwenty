@@ -12,7 +12,7 @@ const router = express.Router();
 router.post("/create", createPrize);
 router.put("/update", updatePrize);
 router.get("/:id", getPrize);
-router.get("/all", getAllPrizes);
+router.get("/get/all", getAllPrizes);
 router.delete("/delete/:id", deletePrize);
 
 export default router;
