@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import { SCHEMAS } from "../constant/enums";
+import { SubmissionType } from "../types/schemas";
 
 const submissionSchema = new Schema(
   {
@@ -52,4 +53,7 @@ const submissionSchema = new Schema(
   { timestamps: true }
 );
 
-export const Submission = model(SCHEMAS.QUESTION, submissionSchema);
+export const Submission = model<SubmissionType>(
+  SCHEMAS.QUESTION,
+  submissionSchema
+);

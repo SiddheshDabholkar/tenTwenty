@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import { SCHEMAS } from "../constant/enums";
+import { PrizeType } from "../types/schemas";
 
 const prizeSchema = new Schema(
   {
@@ -14,4 +15,4 @@ const prizeSchema = new Schema(
   { timestamps: true }
 );
 
-export const Prize = model(SCHEMAS.PRIZE, prizeSchema);
+export const Prize = model<PrizeType>(SCHEMAS.PRIZE, prizeSchema);

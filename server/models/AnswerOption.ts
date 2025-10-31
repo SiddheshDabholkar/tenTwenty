@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import { SCHEMAS } from "../constant/enums";
+import { AnswerOptionType } from "../types/schemas";
 
 const answerOptionSchema = new Schema(
   {
@@ -30,4 +31,4 @@ const answerOptionSchema = new Schema(
   { timestamps: true }
 );
 
-export const AnswerOption = model(SCHEMAS.ANSWER_OPTION, answerOptionSchema);
+export const AnswerOption = model<AnswerOptionType>(SCHEMAS.ANSWER_OPTION, answerOptionSchema);

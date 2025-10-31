@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import { QUESTIONS_TYPES, SCHEMAS } from "../constant/enums";
+import { QuestionType } from "../types/schemas";
 
 const questionSchema = new Schema(
   {
@@ -31,4 +32,4 @@ const questionSchema = new Schema(
   { timestamps: true }
 );
 
-export const Question = model(SCHEMAS.QUESTION, questionSchema);
+export const Question = model<QuestionType>(SCHEMAS.QUESTION, questionSchema);

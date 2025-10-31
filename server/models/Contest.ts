@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import { SCHEMAS, USER_ROLE } from "../constant/enums";
+import { ContestType } from "../types/schemas";
 
 const contestSchema = new Schema(
   {
@@ -10,6 +11,7 @@ const contestSchema = new Schema(
     prizeId: {
       type: Schema.Types.ObjectId,
       ref: SCHEMAS.PRIZE,
+      required: true,
     },
     wonBy: {
       type: Schema.Types.ObjectId,
@@ -23,9 +25,8 @@ const contestSchema = new Schema(
     updatedBy: {
       type: Schema.Types.ObjectId,
       ref: SCHEMAS.USER,
-      required: true,
     },
-    for: [
+    allowedRole: [
       {
         type: String,
         enum: USER_ROLE,
@@ -36,4 +37,4 @@ const contestSchema = new Schema(
   { timestamps: true }
 );
 
-export const Contest = model(SCHEMAS.CONTEST, contestSchema);
+export const Contest = model<ContestType>(SCHEMAS.CONTEST, contestSchema);

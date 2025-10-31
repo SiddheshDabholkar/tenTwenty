@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import { USER_ROLE, SCHEMAS } from "../constant/enums";
+import { UserType } from "../types/schemas";
 
 const userSchema = new Schema(
   {
@@ -29,4 +30,4 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-export const User = model(SCHEMAS.USER, userSchema);
+export const User = model<UserType>(SCHEMAS.USER, userSchema);
