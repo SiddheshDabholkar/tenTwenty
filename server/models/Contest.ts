@@ -32,6 +32,12 @@ const contestSchema = new Schema(
         enum: USER_ROLE,
       },
     ],
+    questions: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: SCHEMAS.QUESTION,
+      },
+    ],
   },
 
   { timestamps: true }

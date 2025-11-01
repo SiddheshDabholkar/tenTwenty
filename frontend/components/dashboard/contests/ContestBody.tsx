@@ -1,6 +1,6 @@
 "use client";
 import axiosInstance from "@/lib/axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
@@ -8,17 +8,22 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Spinner } from "@/components/ui/spinner";
-import Link from "next/link";
 import DateTimeInput from "../DateTimeInput";
 import SelectRole from "./SelectRole";
 import { USER_ROLE } from "@/constant/enums";
 import SelectQuestionsModal from "./SelectQuestionsModal";
 import { Maybe, MaybeArray } from "@/types/common";
-import { PrizeType, QuestionType } from "@/types/schemas";
+import { ContestType, PrizeType, QuestionType } from "@/types/schemas";
 import { Card } from "@/components/ui/card";
 import SelectPrizeModal from "./SelectPrizeModal";
+import { getPrizeDetails, getQuestions } from "@/lib/common";
 
-const ContestBody = () => {
+type ContestBodyProps = React.FC<{
+  data: ContestType;
+}>;
+
+const ContestBody: ContestBodyProps = ({ data }) => {
+  const isEdit = !!data?._id;
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -44,7 +49,7 @@ const ContestBody = () => {
         startDateTime,
         endDateTime,
         role: [role],
-        questions: new Set(questions.map((m) => m._id)),
+        questions: questions.map((m) => m._id),
         prize: prize?._id,
       });
       if (respData.success) {
@@ -58,6 +63,48 @@ const ContestBody = () => {
       handleError();
     }
   };
+
+  const handleUpdateContest = async () => {
+    const handleError = () => {
+      toast.error("Something went wrong! Please try again.");
+      setIsUpdating(false);
+    };
+
+    try {
+      setIsUpdating(true);
+      const { data: respData } = await axiosInstance.put("contest/update", {
+        _id: data?._id,
+        name: title,
+        description,
+        startDateTime,
+        endDateTime,
+        role: [role],
+        questions: questions.map((m) => m._id),
+        prize: prize?._id,
+      });
+      if (respData.success) {
+        toast.success("Contest updated successfully!");
+        router.push("/dashboard/contests");
+      } else {
+        handleError();
+      }
+      setIsUpdating(false);
+    } catch (error) {
+      handleError();
+    }
+  };
+
+  useEffect(() => {
+    if (data) {
+      setTitle(data.name);
+      setDescription(data.description);
+      setStartDateTime(new Date(data.startDateTime));
+      setEndDateTime(new Date(data.endDateTime));
+      // setRole(data.allowedRoles[0]);
+      setQuestions(getQuestions(data.questions));
+      setPrize(getPrizeDetails(data.prizeId));
+    }
+  }, [data]);
 
   return (
     <div className="w-full max-w-md">
@@ -151,20 +198,37 @@ const ContestBody = () => {
             </FieldGroup>
           </FieldSet>
           <div className="flex flex-col items-center">
-            <Button
-              onClick={handleCreateContest}
-              type="button"
-              className="w-full cursor-pointer"
-            >
-              {isCreating ? (
-                <>
-                  <Spinner />
-                  Creating...
-                </>
-              ) : (
-                <>Create</>
-              )}
-            </Button>
+            {isEdit ? (
+              <Button
+                onClick={handleUpdateContest}
+                type="button"
+                className="w-full cursor-pointer"
+              >
+                {isUpdating ? (
+                  <>
+                    <Spinner />
+                    Updating...
+                  </>
+                ) : (
+                  <>Update</>
+                )}
+              </Button>
+            ) : (
+              <Button
+                onClick={handleCreateContest}
+                type="button"
+                className="w-full cursor-pointer"
+              >
+                {isCreating ? (
+                  <>
+                    <Spinner />
+                    Creating...
+                  </>
+                ) : (
+                  <>Create</>
+                )}
+              </Button>
+            )}
           </div>
         </FieldGroup>
       </form>

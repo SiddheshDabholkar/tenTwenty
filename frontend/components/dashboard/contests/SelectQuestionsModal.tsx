@@ -44,37 +44,35 @@ const SelectQuestionsModal: SelectQuestionsModalProps = ({
 
   return (
     <Dialog>
-      <form>
-        <DialogTrigger asChild>
-          <Button variant="outline">Select Question</Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Select Questions</DialogTitle>
-            <DialogDescription>
-              Select questions for your contest
-            </DialogDescription>
-          </DialogHeader>
-          <QuestionsList
-            search={search}
-            setSearch={setSearch}
-            isLoading={isLoading}
-            data={data}
-            fetchData={fetchData}
-            hasMore={hasMore}
-            debouncedSearch={debouncedSearch}
-            isSelect
-            skip={skip}
-            onSelect={onSelect}
-            selectedQuestions={questions}
-          />
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </form>
+      <DialogTrigger asChild>
+        <Button variant="outline">Select Question</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Select Questions</DialogTitle>
+          <DialogDescription>
+            Select questions for your contest
+          </DialogDescription>
+        </DialogHeader>
+        <QuestionsList
+          search={search}
+          setSearch={setSearch}
+          isLoading={isLoading}
+          data={data}
+          fetchData={fetchData}
+          hasMore={hasMore}
+          debouncedSearch={debouncedSearch}
+          isSelect
+          skip={skip}
+          onSelect={onSelect}
+          selectedQuestions={questions}
+        />
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
   );
 };

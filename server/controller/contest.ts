@@ -73,7 +73,9 @@ const getContest = async (req: Request, res: Response) => {
       })
     );
   }
-  const contest = await Contest.findById(id);
+  const contest = await Contest.findById(id)
+    .populate("prizeId")
+    .populate("questions");
   if (!contest) {
     return res.status(400).json(
       formatResponse({
@@ -116,11 +118,37 @@ const getAllContest = async (req: Request, res: Response) => {
 };
 
 const updateContest = async (req: Request, res: Response) => {
-  const { _id } = req.body;
+  const {
+    _id,
+    name,
+    description,
+    startDateTime,
+    endDateTime,
+    questions,
+    role,
+    prize,
+  } = req.body;
   if (!_id) {
     return res.status(400).json(
       formatResponse({
         message: CONTEST_MESSAGES.CONTEST_ID_REQUIRED,
+        data: null,
+        success: false,
+      })
+    );
+  }
+  const validatedError = validateCreateContestPayload({
+    name,
+    description,
+    startDateTime,
+    endDateTime,
+    questions,
+    role,
+  });
+  if (validatedError) {
+    return res.status(400).json(
+      formatResponse({
+        message: validatedError,
         data: null,
         success: false,
       })

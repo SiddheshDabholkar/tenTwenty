@@ -23,6 +23,7 @@ type ContestType = Document &
     prizeId: MaybeObjectId<PrizeType>;
     wonBy: MaybeObjectId<WonbyType>;
     allowedRoles: USER_ROLE[];
+    questions: MaybeObjectId<QuestionType>[];
   };
 
 type QuestionType = Document &

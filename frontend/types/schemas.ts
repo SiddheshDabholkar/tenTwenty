@@ -1,5 +1,5 @@
 import { QUESTIONS_TYPES, USER_ROLE } from "@/constant/enums";
-import { MaybeString } from "./common";
+import { MaybeArray, MaybeString } from "./common";
 
 type TimeStampsAndId = {
   _id: string;
@@ -30,6 +30,7 @@ type ContestType = Document &
     prizeId: MaybeString<PrizeType>;
     wonBy: MaybeString<WonbyType>;
     allowedRoles: USER_ROLE[];
+    questions: MaybeArray<MaybeString<QuestionType>>;
   };
 
 type QuestionType = Document &

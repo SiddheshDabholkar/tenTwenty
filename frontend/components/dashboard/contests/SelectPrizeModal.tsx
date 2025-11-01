@@ -41,35 +41,33 @@ const SelectPrizeModal: SelectPrizeModalProps = ({ onSelect, prize }) => {
 
   return (
     <Dialog>
-      <form>
-        <DialogTrigger asChild>
-          <Button variant="outline">Select Prize</Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[625px]">
-          <DialogHeader>
-            <DialogTitle>Select Prize</DialogTitle>
-            <DialogDescription>Select prize for your contest</DialogDescription>
-          </DialogHeader>
-          <PrizesList
-            search={search}
-            setSearch={setSearch}
-            isLoading={isLoading}
-            data={data}
-            fetchData={fetchData}
-            hasMore={hasMore}
-            debouncedSearch={debouncedSearch}
-            isSelect
-            skip={skip}
-            onSelect={onSelect}
-            selectedPrize={prize}
-          />
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </form>
+      <DialogTrigger asChild>
+        <Button variant="outline">Select Prize</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[625px]">
+        <DialogHeader>
+          <DialogTitle>Select Prize</DialogTitle>
+          <DialogDescription>Select prize for your contest</DialogDescription>
+        </DialogHeader>
+        <PrizesList
+          search={search}
+          setSearch={setSearch}
+          isLoading={isLoading}
+          data={data}
+          fetchData={fetchData}
+          hasMore={hasMore}
+          debouncedSearch={debouncedSearch}
+          isSelect
+          skip={skip}
+          onSelect={onSelect}
+          selectedPrize={prize}
+        />
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
   );
 };
