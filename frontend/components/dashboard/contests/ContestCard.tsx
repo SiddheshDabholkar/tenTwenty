@@ -8,10 +8,18 @@ import React from "react";
 type ContestCardProps = React.FC<{
   data: ContestType;
   isAdmin: boolean;
+  isPublic: boolean;
 }>;
-const ContestCard: ContestCardProps = ({ data, isAdmin }) => {
+const ContestCard: ContestCardProps = ({ data, isAdmin, isPublic = false }) => {
+  const url = isPublic
+    ? `/auth/login`
+    : `/dashboard/contests/details/${data._id}`;
+
+  const joinUrl = isPublic
+    ? `/auth/login`
+    : `/dashboard/contests/details/${data._id}`;
   return (
-    <Link href={`/dashboard/contests/edit/${data._id}`}>
+    <Link href={url}>
       <Card className="w-full flex flex-row  items-center p-4 gap-4 shadow-none">
         <span className="bg-blue-100 p-3 h-12 w-12 rounded-full">
           <Gamepad2 />
@@ -22,16 +30,19 @@ const ContestCard: ContestCardProps = ({ data, isAdmin }) => {
             {data.description}
           </CardDescription>
           <div className="flex flex-row gap-2 mt-2">
-            <Link href={`/dashboard/contests/leaderboard/${data._id}`}>
-              <Button variant="secondary">View Leaderboard</Button>
-            </Link>
+            {!isPublic && (
+              <Link href={`/dashboard/contests/leaderboard/${data._id}`}>
+                <Button variant="secondary">View Leaderboard</Button>
+              </Link>
+            )}
+
             {isAdmin && (
               <Link href={`/dashboard/contests/edit/${data._id}`}>
                 <Button variant="secondary">Edit</Button>
               </Link>
             )}
 
-            <Link href={`/dashboard/contests/details/${data._id}`}>
+            <Link href={joinUrl}>
               <Button variant="secondary">Join</Button>
             </Link>
           </div>

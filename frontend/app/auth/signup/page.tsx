@@ -99,7 +99,10 @@ const SignupPage = () => {
                   <>Create</>
                 )}
               </Button>
-              <Link className="text-[0.85rem] underline mt-2" href="/">
+              <Link
+                className="text-[0.85rem] underline mt-2"
+                href="/auth/login"
+              >
                 Already have an account?
               </Link>
             </div>

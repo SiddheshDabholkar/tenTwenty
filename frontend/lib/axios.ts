@@ -42,7 +42,7 @@ axiosInstance.interceptors.response.use(
       ) {
         localStorage.removeItem(LOCAL_KEYS.USER_DATA);
         toast.error("Token expired");
-        window.location.replace("/");
+        window.location.replace("/auth/login");
       }
 
       return Promise.resolve(error.response);

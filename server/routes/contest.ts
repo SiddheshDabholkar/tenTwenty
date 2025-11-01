@@ -25,5 +25,6 @@ router.post(
   processContestEnd
 );
 router.get("/get/by-user", authMiddleware, getUserContests);
+router.get("/get/public/all", getAllContest);
 
 export default router;
