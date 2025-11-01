@@ -5,6 +5,7 @@ import cors from "cors";
 import routes from "./routes";
 import { errorMiddleware } from "./middleware/error";
 import { initContestScheduler } from "./utils/contestScheduler";
+import { limiter } from "./middleware/ratelimit";
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(
     credentials: true,
   })
 );
+app.use(limiter);
 
 app.use(errorMiddleware);
 

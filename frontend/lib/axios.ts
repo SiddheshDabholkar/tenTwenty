@@ -28,7 +28,14 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response) {
-      const { message } = error.response.data || {};
+      const { status, data } = error.response;
+      const { message } = data || {};
+
+      if (status === 429) {
+        toast.error("Too many requests — please wait a moment and try again.");
+        return Promise.resolve(error.response);
+      }
+
       if (
         message === COMMON_MESSAGES.INVALID_AUTH_TOKEN ||
         message === COMMON_MESSAGES.TOKEN_EXPIRED
@@ -37,8 +44,10 @@ axiosInstance.interceptors.response.use(
         toast.error("Token expired");
         window.location.replace("/");
       }
+
       return Promise.resolve(error.response);
     }
+
     return Promise.reject(error);
   }
 );
