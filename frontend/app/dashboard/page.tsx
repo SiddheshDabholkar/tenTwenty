@@ -1,7 +1,6 @@
 "use client";
 
 import QuickActions from "@/components/dashboard/QuickActions";
-import YourContests from "@/components/dashboard/YourContests";
 import { USER_ROLE } from "@/constant/enums";
 import { useUser } from "@/hooks/useUser";
 import { getUserFullName } from "@/lib/common";

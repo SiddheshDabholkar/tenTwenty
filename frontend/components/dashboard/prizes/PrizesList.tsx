@@ -7,6 +7,8 @@ import React from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Button } from "@/components/ui/button";
 import PrizeCard from "@/components/dashboard/prizes/PrizeCard";
+import LoadingList from "@/components/LoadingList";
+import Empty from "@/components/Empty";
 
 type PrizesListProps = React.FC<{
   search: string;
@@ -56,9 +58,12 @@ const PrizesList: PrizesListProps = ({
       </div>
 
       {isLoading ? (
-        <p>loading....</p>
+        <LoadingList />
       ) : data.length === 0 ? (
-        <p>Empty data</p>
+        <Empty
+          title="No prizes found"
+          description="Please refresh the page or try again later."
+        />
       ) : (
         <>
           <InfiniteScroll

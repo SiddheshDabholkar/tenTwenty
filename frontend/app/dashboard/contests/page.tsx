@@ -1,6 +1,8 @@
 "use client";
 
 import ContestCard from "@/components/dashboard/contests/ContestCard";
+import Empty from "@/components/Empty";
+import LoadingList from "@/components/LoadingList";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { USER_ROLE } from "@/constant/enums";
@@ -94,9 +96,12 @@ const Contests = () => {
       </div>
 
       {isLoading ? (
-        <p>loading....</p>
+        <LoadingList />
       ) : data.length === 0 ? (
-        <p>Empty data</p>
+        <Empty
+          title="No contests found"
+          description="Please refresh the page or try again later."
+        />
       ) : (
         <>
           <InfiniteScroll
@@ -115,7 +120,14 @@ const Contests = () => {
           >
             <div className="w-full flex flex-col justify-center gap-3 mt-4">
               {data.map((m, i) => {
-                return <ContestCard isAdmin={isAdmin} data={m} key={i} />;
+                return (
+                  <ContestCard
+                    isPublic={false}
+                    isAdmin={isAdmin}
+                    data={m}
+                    key={i}
+                  />
+                );
               })}
             </div>
           </InfiniteScroll>

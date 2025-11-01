@@ -9,6 +9,8 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import InfiniteScroll from "react-infinite-scroll-component";
 import SubmissionCard from "@/components/dashboard/submission/SubmissionCard";
+import LoadingList from "@/components/LoadingList";
+import Empty from "@/components/Empty";
 
 const LIMIT = 10;
 
@@ -72,7 +74,7 @@ const History = () => {
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search contest"
+              placeholder="Search history"
               required
               className="max-w-[300px]"
             />
@@ -82,9 +84,12 @@ const History = () => {
       </div>
 
       {isLoading ? (
-        <p>loading....</p>
+        <LoadingList />
       ) : data.length === 0 ? (
-        <p>Empty data</p>
+        <Empty
+          title="No history found"
+          description="Please refresh the page or try again later."
+        />
       ) : (
         <>
           <InfiniteScroll

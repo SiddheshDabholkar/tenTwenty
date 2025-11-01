@@ -9,7 +9,7 @@ const adminMiddleware = (req: Request, res: Response, next: NextFunction) => {
   if (user.role !== USER_ROLE.ADMIN) {
     return res.status(401).json(
       formatResponse({
-        message: COMMON_MESSAGES.TOKEN_EXPIRED,
+        message: COMMON_MESSAGES.UNAUTHORIZED,
         success: false,
         data: null,
       })

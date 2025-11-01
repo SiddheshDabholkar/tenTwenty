@@ -6,6 +6,8 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import QuestionCard from "./QuestionCard";
 import { QuestionType } from "@/types/schemas";
 import { MaybeArray } from "@/types/common";
+import LoadingList from "@/components/LoadingList";
+import Empty from "@/components/Empty";
 
 type QuestionsListProps = React.FC<{
   search: string;
@@ -56,9 +58,12 @@ const QuestionsList: QuestionsListProps = ({
       </div>
 
       {isLoading ? (
-        <p>loading....</p>
+        <LoadingList />
       ) : data.length === 0 ? (
-        <p>Empty data</p>
+        <Empty
+          title="No questions found"
+          description="Please refresh the page or try again later."
+        />
       ) : (
         <>
           <InfiniteScroll

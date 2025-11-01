@@ -9,6 +9,8 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import InfiniteScroll from "react-infinite-scroll-component";
 import UserCard from "@/components/dashboard/users/UserCard";
+import LoadingList from "@/components/LoadingList";
+import Empty from "@/components/Empty";
 
 const LIMIT = 10;
 
@@ -82,9 +84,12 @@ const Users = () => {
       </div>
 
       {isLoading ? (
-        <p>loading....</p>
+        <LoadingList />
       ) : data.length === 0 ? (
-        <p>Empty data</p>
+        <Empty
+          title="No users found"
+          description="Please refresh the page or try again later."
+        />
       ) : (
         <>
           <InfiniteScroll
