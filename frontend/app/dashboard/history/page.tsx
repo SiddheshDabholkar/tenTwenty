@@ -4,11 +4,11 @@ import { Input } from "@/components/ui/input";
 import useDebouncedSearch from "@/hooks/useDebouncedSearch";
 import axiosInstance from "@/lib/axios";
 import { MaybeArray } from "@/types/common";
-import { UserType } from "@/types/schemas";
+import { SubmissionType } from "@/types/schemas";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { Card, CardDescription, CardTitle } from "@/components/ui/card";
+import SubmissionCard from "@/components/dashboard/submission/SubmissionCard";
 
 const LIMIT = 10;
 
@@ -18,7 +18,7 @@ const History = () => {
   const [skip, setSkip] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const debouncedSearch = useDebouncedSearch({ search });
-  const [data, setData] = useState<MaybeArray<UserType>>([]);
+  const [data, setData] = useState<MaybeArray<SubmissionType>>([]);
 
   type fetchDataProps = {
     skip: number;
@@ -103,7 +103,7 @@ const History = () => {
           >
             <div className="w-full flex flex-col justify-center gap-3 mt-4">
               {data.map((m, i) => {
-                return <HistoryCard data={m} key={i} />;
+                return <SubmissionCard data={m} key={i} />;
               })}
             </div>
           </InfiniteScroll>
@@ -114,12 +114,3 @@ const History = () => {
 };
 
 export default History;
-
-const HistoryCard = ({ data }) => {
-  return (
-    <Card>
-      <CardTitle>opsafds</CardTitle>
-      <CardDescription>sufhiofgodfjgoildef</CardDescription>
-    </Card>
-  );
-};

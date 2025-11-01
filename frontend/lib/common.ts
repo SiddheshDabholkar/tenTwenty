@@ -1,6 +1,7 @@
 import { Maybe, MaybeArray, MaybeString } from "@/types/common";
 import {
   AnswerOptionType,
+  ContestType,
   PrizeType,
   QuestionType,
   UserType,
@@ -36,10 +37,23 @@ const getQuestionsOptions = (
   return data.map((m) => m as AnswerOptionType);
 };
 
+const getContestDetails = (
+  data: MaybeString<ContestType> | Maybe<ContestType>
+) => {
+  if (typeof data === "string") {
+    return null;
+  }
+  if (data?._id) {
+    return data as ContestType;
+  }
+  return null;
+};
+
 export {
   getUserFullName,
   getAnswerOptions,
   getPrizeDetails,
   getQuestions,
   getQuestionsOptions,
+  getContestDetails,
 };

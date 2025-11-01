@@ -202,7 +202,19 @@ const getSubmission = async (req: Request, res: Response) => {
       })
     );
   }
-  const submission = await Submission.findById(id);
+  const submission = await Submission.findById(id).populate([
+    {
+      path: "contestId",
+      select: "name description",
+    },
+    {
+      path: "questionsAnswers.questionId",
+      select: "question",
+      populate: {
+        path: "options",
+      },
+    },
+  ]);
   if (!submission) {
     return res.status(400).json(
       formatResponse({
@@ -249,6 +261,10 @@ const getUserSubmission = async (req: Request, res: Response) => {
   const contests = await Submission.find({
     userId,
   })
+    .populate({
+      path: "contestId",
+      select: "name description",
+    })
     .skip(+skip)
     .limit(+limit);
   return res.status(200).json(
