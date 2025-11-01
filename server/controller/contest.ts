@@ -4,6 +4,7 @@ import { Contest } from "../models/Contest";
 import { CONTEST_MESSAGES } from "../constant/message";
 import { Request, Response } from "express";
 import { handleContestEnd } from "../utils/contestScheduler";
+import { Submission } from "../models/Submission";
 
 const createContest = async (req: Request, res: Response) => {
   const userId = req?.user?._id;

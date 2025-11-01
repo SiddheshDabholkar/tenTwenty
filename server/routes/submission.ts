@@ -6,6 +6,7 @@ import {
   getSubmission,
   getAllSubmission,
   getUserSubmission,
+  getLeaderboard,
 } from "../controller/submission";
 
 const router = express.Router();
@@ -16,5 +17,6 @@ router.get("/:id", getSubmission);
 router.get("/get/all", getAllSubmission);
 router.delete("/delete/:id", deleteSubmission);
 router.get("/get/user", getUserSubmission);
+router.get("/get/leaderboard/:id", getLeaderboard);
 
 export default router;

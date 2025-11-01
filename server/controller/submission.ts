@@ -318,6 +318,31 @@ const getUserSubmission = async (req: Request, res: Response) => {
   }
 };
 
+const getLeaderboard = async (req: Request, res: Response) => {
+  const { id, skip = 0, limit = 10 } = req.params;
+  if (!id) {
+    return res.status(400).json(
+      formatResponse({
+        message: CONTEST_MESSAGES.CONTEST_ID_REQUIRED,
+        data: null,
+        success: false,
+      })
+    );
+  }
+  const leaderboard = await Submission.find({ contestId: id })
+    .populate("userId")
+    .sort({ score: -1, timeTaken: 1 })
+    .skip(+skip)
+    .limit(+limit);
+  return res.status(200).json(
+    formatResponse({
+      message: "Leaderboard fetched successfully",
+      data: leaderboard,
+      success: true,
+    })
+  );
+};
+
 export {
   triggerSubmission,
   updateSubmission,
@@ -325,4 +350,5 @@ export {
   getSubmission,
   getAllSubmission,
   getUserSubmission,
+  getLeaderboard,
 };

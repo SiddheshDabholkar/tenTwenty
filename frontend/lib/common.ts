@@ -49,6 +49,16 @@ const getContestDetails = (
   return null;
 };
 
+const getUserDetails = (data: MaybeString<UserType> | Maybe<UserType>) => {
+  if (typeof data === "string") {
+    return null;
+  }
+  if (data?._id) {
+    return data as UserType;
+  }
+  return null;
+};
+
 export {
   getUserFullName,
   getAnswerOptions,
@@ -56,4 +66,5 @@ export {
   getQuestions,
   getQuestionsOptions,
   getContestDetails,
+  getUserDetails,
 };
