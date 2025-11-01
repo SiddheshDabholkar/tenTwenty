@@ -4,6 +4,7 @@ import { QUESTION_MESSAGES } from "../constant/message";
 import { Question } from "../models/Question";
 import { AnswerOption } from "../models/AnswerOption";
 import { QUESTIONS_TYPES } from "../constant/enums";
+import { Contest } from "../models/Contest";
 
 const createQuestion = async (req: Request, res: Response) => {
   const { question, type, options } = req.body;
@@ -59,6 +60,29 @@ const updateQuestion = async (req: Request, res: Response) => {
     return res.status(400).json(
       formatResponse({
         message: QUESTION_MESSAGES.QUESTION_ID_REQUIRED,
+        data: null,
+        success: false,
+      })
+    );
+  }
+
+  const questionDetails = await Question.findById(_id);
+  if (!questionDetails) {
+    return res.status(400).json(
+      formatResponse({
+        message: QUESTION_MESSAGES.QUESTION_NOT_FOUND,
+        data: null,
+        success: false,
+      })
+    );
+  }
+  const usedBy = await Contest.find({
+    questions: { $in: [_id] },
+  }).countDocuments();
+  if (usedBy > 0) {
+    return res.status(400).json(
+      formatResponse({
+        message: QUESTION_MESSAGES.QUESTION_USED_BY_CONTEST,
         data: null,
         success: false,
       })
@@ -186,6 +210,9 @@ const getQuestion = async (req: Request, res: Response) => {
     );
   }
   const question = await Question.findById(id).populate("options");
+  const usedBy = await Contest.find({
+    questions: { $in: [id] },
+  }).countDocuments();
   if (!question) {
     return res.status(400).json(
       formatResponse({
@@ -198,7 +225,10 @@ const getQuestion = async (req: Request, res: Response) => {
   return res.status(200).json(
     formatResponse({
       message: QUESTION_MESSAGES.QUESTION_FETCH_SUCCESS,
-      data: question,
+      data: {
+        ...question.toObject(),
+        usedBy,
+      },
       success: true,
     })
   );

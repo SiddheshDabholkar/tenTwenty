@@ -157,6 +157,7 @@ const getUserContests = async (req: Request, res: Response) => {
     })
   );
 };
+
 const updateContest = async (req: Request, res: Response) => {
   const {
     _id,
@@ -173,6 +174,34 @@ const updateContest = async (req: Request, res: Response) => {
     return res.status(400).json(
       formatResponse({
         message: CONTEST_MESSAGES.CONTEST_ID_REQUIRED,
+        data: null,
+        success: false,
+      })
+    );
+  }
+  const contest = await Contest.findById(_id);
+  if (!contest) {
+    return res.status(400).json(
+      formatResponse({
+        message: CONTEST_MESSAGES.CONTEST_NOT_FOUND,
+        data: null,
+        success: false,
+      })
+    );
+  }
+  if (contest.wonBy) {
+    return res.status(400).json(
+      formatResponse({
+        message: CONTEST_MESSAGES.CONTEST_ALREADY_ENDED,
+        data: null,
+        success: false,
+      })
+    );
+  }
+  if (contest.startDateTime < new Date()) {
+    return res.status(400).json(
+      formatResponse({
+        message: CONTEST_MESSAGES.CONTEST_ALREADY_STARTED,
         data: null,
         success: false,
       })
