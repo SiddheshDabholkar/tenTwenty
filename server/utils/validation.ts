@@ -112,7 +112,7 @@ const validateCreateContestPayload = ({
   if (name.trim().length > 20) return CONTEST_MESSAGES.CONTEST_NAME_TOO_LARGE;
   if (description.trim().length < 3)
     return CONTEST_MESSAGES.CONTEST_DESCRIPTION_TOO_SMALL;
-  if (description.trim().length > 100)
+  if (description.trim().length > 500)
     return CONTEST_MESSAGES.CONTEST_DESCRIPTION_TOO_LARGE;
   if (!startDateTime) {
     return CONTEST_MESSAGES.START_DATE_REQUIRED;
@@ -121,7 +121,7 @@ const validateCreateContestPayload = ({
     return CONTEST_MESSAGES.ROLE_REQUIRED;
   }
   const invalidRole = role.filter((r) => !Object.values(USER_ROLE).includes(r));
-  if (invalidRole) {
+  if (invalidRole.length > 0) {
     return CONTEST_MESSAGES.INVALID_ROLE;
   }
   if (!endDateTime) {
@@ -129,8 +129,6 @@ const validateCreateContestPayload = ({
   }
   if (startDateTime > endDateTime)
     return CONTEST_MESSAGES.CONTEST_STARTDATE_CAN_NOT_BE_AFTER_ENDDATE;
-  const error = validateQuestions({ questions });
-  if (error) return error;
   return null;
 };
 

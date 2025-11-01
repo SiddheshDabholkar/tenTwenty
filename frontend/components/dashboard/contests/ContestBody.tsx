@@ -10,6 +10,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Spinner } from "@/components/ui/spinner";
 import Link from "next/link";
 import DateTimeInput from "../DateTimeInput";
+import SelectRole from "./SelectRole";
+import { USER_ROLE } from "@/constant/enums";
+import SelectQuestionsModal from "./SelectQuestionsModal";
+import { Maybe, MaybeArray } from "@/types/common";
+import { PrizeType, QuestionType } from "@/types/schemas";
+import { Card } from "@/components/ui/card";
+import SelectPrizeModal from "./SelectPrizeModal";
 
 const ContestBody = () => {
   const router = useRouter();
@@ -17,10 +24,11 @@ const ContestBody = () => {
   const [description, setDescription] = useState("");
   const [startDateTime, setStartDateTime] = useState(new Date());
   const [endDateTime, setEndDateTime] = useState(new Date());
-  const [role, setRole] = useState([]);
-  const [questions, setQuestions] = useState([]);
+  const [role, setRole] = useState(USER_ROLE.NORMAL);
+  const [questions, setQuestions] = useState<MaybeArray<QuestionType>>([]);
   const [isCreating, setIsCreating] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [prize, setPrize] = useState<Maybe<PrizeType>>(null);
 
   const handleCreateContest = async () => {
     const handleError = () => {
@@ -31,12 +39,13 @@ const ContestBody = () => {
     try {
       setIsCreating(true);
       const { data: respData } = await axiosInstance.post("contest/create", {
-        title,
+        name: title,
         description,
         startDateTime,
         endDateTime,
-        role,
-        questions,
+        role: [role],
+        questions: new Set(questions.map((m) => m._id)),
+        prize: prize?._id,
       });
       if (respData.success) {
         toast.success("Contest created successfully!");
@@ -82,9 +91,63 @@ const ContestBody = () => {
                   placeholder="Type your message here."
                 />
               </Field>
+              <Field className="gap-1">
+                <FieldLabel htmlFor="checkout-7j9-card-name-43j">
+                  contest for
+                </FieldLabel>
+                <SelectRole onSelect={(v) => setRole(v)} selectedRole={role} />
+              </Field>
 
-              <DateTimeInput dateLabel="Start Date" timeLabel="Start Time" />
-              <DateTimeInput dateLabel="End Date" timeLabel="End Time" />
+              <Card className="p-2 gap-1 flex flex-row items-center shadow-none">
+                <SelectQuestionsModal
+                  questions={questions}
+                  onSelect={(v) => {
+                    const isAlreadyPresent = questions.some(
+                      (m) => m._id === v._id
+                    );
+                    if (isAlreadyPresent) {
+                      setQuestions((prev) =>
+                        prev.filter((m) => m._id !== v._id)
+                      );
+                    } else {
+                      setQuestions((prev) => [...prev, v]);
+                    }
+                  }}
+                />
+                <p className="bg-green-100 text-[0.85rem] w-fit px-2 rounded-sm py-1">
+                  {questions.length} Questions selected
+                </p>
+              </Card>
+
+              <Card className="p-2 gap-1 flex flex-row items-center shadow-none">
+                <SelectPrizeModal
+                  prize={prize}
+                  onSelect={(v) => {
+                    const isAlreadyPresent = prize?._id === v._id;
+                    if (isAlreadyPresent) {
+                      setPrize(null);
+                    } else {
+                      setPrize(v);
+                    }
+                  }}
+                />
+                <p className="bg-green-100 text-[0.85rem] w-fit px-2 rounded-sm py-1">
+                  Prize selected
+                </p>
+              </Card>
+
+              <DateTimeInput
+                dateTime={startDateTime}
+                setDateTime={setStartDateTime}
+                dateLabel="Start Date"
+                timeLabel="Start Time"
+              />
+              <DateTimeInput
+                dateTime={endDateTime}
+                setDateTime={setEndDateTime}
+                dateLabel="End Date"
+                timeLabel="End Time"
+              />
             </FieldGroup>
           </FieldSet>
           <div className="flex flex-col items-center">
@@ -102,9 +165,6 @@ const ContestBody = () => {
                 <>Create</>
               )}
             </Button>
-            <Link className="text-[0.85rem] underline mt-2" href="/">
-              Already have an account?
-            </Link>
           </div>
         </FieldGroup>
       </form>

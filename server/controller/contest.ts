@@ -6,6 +6,7 @@ import { Request, Response } from "express";
 import { handleContestEnd } from "../utils/contestScheduler";
 
 const createContest = async (req: Request, res: Response) => {
+  const userId = req?.user?._id;
   const {
     name,
     description,
@@ -13,7 +14,7 @@ const createContest = async (req: Request, res: Response) => {
     endDateTime,
     questions,
     role,
-    prizeId,
+    prize,
   } = req.body;
   const validatedError = validateCreateContestPayload({
     name,
@@ -38,8 +39,10 @@ const createContest = async (req: Request, res: Response) => {
     startDateTime,
     endDateTime,
     questions,
-    role,
-    prizeId,
+    allowedRoles: role,
+    prizeId: prize,
+    createdBy: userId,
+    updatedBy: userId,
   });
   if (!createdContest) {
     return res.status(400).json(
