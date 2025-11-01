@@ -2,12 +2,14 @@
 
 import QuickActions from "@/components/dashboard/QuickActions";
 import YourContests from "@/components/dashboard/YourContests";
+import { USER_ROLE } from "@/constant/enums";
 import { useUser } from "@/hooks/useUser";
 import { getUserFullName } from "@/lib/common";
 import React from "react";
 
 const Dashboard = () => {
   const { user, isFetching } = useUser();
+  const isAdmin = user?.role === USER_ROLE.ADMIN;
 
   if (isFetching) {
     return <div>Loading...</div>;
@@ -25,7 +27,7 @@ const Dashboard = () => {
       <p className="leading-7 text-[0.85rem]">
         Let’s make today productive — here’s what’s happening on your dashboard.
       </p>
-      <QuickActions />
+      <QuickActions isAdmin={isAdmin} />
     </div>
   );
 };

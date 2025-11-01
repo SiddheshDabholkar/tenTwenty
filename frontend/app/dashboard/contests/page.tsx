@@ -3,7 +3,9 @@
 import ContestCard from "@/components/dashboard/contests/ContestCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { USER_ROLE } from "@/constant/enums";
 import useDebouncedSearch from "@/hooks/useDebouncedSearch";
+import { useUser } from "@/hooks/useUser";
 import axiosInstance from "@/lib/axios";
 import { MaybeArray } from "@/types/common";
 import { ContestType } from "@/types/schemas";
@@ -15,6 +17,8 @@ import { toast } from "sonner";
 const LIMIT = 10;
 
 const Contests = () => {
+  const { user } = useUser();
+  const isAdmin = user?.role === USER_ROLE.ADMIN;
   const [search, setSearch] = useState("");
   const [hasMore, setHasMore] = useState(false);
   const [skip, setSkip] = useState(0);
@@ -37,7 +41,7 @@ const Contests = () => {
         setData([]);
         setSkip(0);
       }
-      const { data } = await axiosInstance.get("contest/get/all", {
+      const { data } = await axiosInstance.get("contest/get/by-user", {
         params: {
           skip,
           limit: LIMIT,
@@ -74,16 +78,18 @@ const Contests = () => {
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search user"
+              placeholder="Search contests"
               required
               className="max-w-[300px]"
             />
           </div>
         </div>
         <div>
-          <Link href="/dashboard/contests/create">
-            <Button>Create</Button>
-          </Link>
+          {isAdmin && (
+            <Link href="/dashboard/contests/create">
+              <Button>Create</Button>
+            </Link>
+          )}
         </div>
       </div>
 
@@ -109,7 +115,7 @@ const Contests = () => {
           >
             <div className="w-full flex flex-col justify-center gap-3 mt-4">
               {data.map((m, i) => {
-                return <ContestCard data={m} key={i} />;
+                return <ContestCard isAdmin={isAdmin} data={m} key={i} />;
               })}
             </div>
           </InfiniteScroll>

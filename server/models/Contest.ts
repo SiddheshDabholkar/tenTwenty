@@ -26,7 +26,7 @@ const contestSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: SCHEMAS.USER,
     },
-    allowedRole: [
+    allowedRoles: [
       {
         type: String,
         enum: USER_ROLE,

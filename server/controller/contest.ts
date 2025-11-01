@@ -5,6 +5,7 @@ import { CONTEST_MESSAGES } from "../constant/message";
 import { Request, Response } from "express";
 import { handleContestEnd } from "../utils/contestScheduler";
 import { Submission } from "../models/Submission";
+import { USER_ROLE } from "../constant/enums";
 
 const createContest = async (req: Request, res: Response) => {
   const userId = req?.user?._id;
@@ -101,9 +102,8 @@ const getContest = async (req: Request, res: Response) => {
 };
 
 const getAllContest = async (req: Request, res: Response) => {
-  const { skip = 0, limit = 10, search = "", role } = req.query;
+  const { skip = 0, limit = 10, search = "" } = req.query;
   const payload = {
-    role,
     ...(search
       ? {
           $or: [
@@ -123,6 +123,40 @@ const getAllContest = async (req: Request, res: Response) => {
   );
 };
 
+const getUserContests = async (req: Request, res: Response) => {
+  const { skip = 0, limit = 10, search = "" } = req.query;
+  const user = req.user;
+  const role = user?.role;
+  const isNormal = role === USER_ROLE.NORMAL;
+
+  let payload = {
+    ...(isNormal
+      ? {
+          allowedRoles: { $in: [role] },
+        }
+      : {}),
+    ...(search
+      ? {
+          $or: [
+            { title: { $regex: search, $options: "i" } },
+            { description: { $regex: search, $options: "i" } },
+          ],
+        }
+      : {}),
+  };
+  console.log({
+    payload,
+    role,
+  });
+  const contests = await Contest.find(payload).skip(+skip).limit(+limit);
+  return res.status(200).json(
+    formatResponse({
+      message: CONTEST_MESSAGES.CONTEST_FETCH_SUCCESS,
+      data: contests,
+      success: true,
+    })
+  );
+};
 const updateContest = async (req: Request, res: Response) => {
   const {
     _id,
@@ -134,6 +168,7 @@ const updateContest = async (req: Request, res: Response) => {
     role,
     prize,
   } = req.body;
+  const userId = req?.user?._id;
   if (!_id) {
     return res.status(400).json(
       formatResponse({
@@ -160,9 +195,23 @@ const updateContest = async (req: Request, res: Response) => {
       })
     );
   }
-  const updatedContest = await Contest.findByIdAndUpdate(_id, req.body, {
-    new: true,
-  });
+  const updatedContest = await Contest.findByIdAndUpdate(
+    _id,
+    {
+      ...req.body,
+      name,
+      description,
+      startDateTime,
+      endDateTime,
+      questions,
+      allowedRoles: role,
+      prizeId: prize,
+      updatedBy: userId,
+    },
+    {
+      new: true,
+    }
+  );
   if (!updatedContest) {
     return res.status(400).json(
       formatResponse({
@@ -250,4 +299,5 @@ export {
   updateContest,
   deleteContest,
   processContestEnd,
+  getUserContests,
 };

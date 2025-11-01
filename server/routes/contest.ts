@@ -6,6 +6,7 @@ import {
   updateContest,
   deleteContest,
   processContestEnd,
+  getUserContests,
 } from "../controller/contest";
 import { authMiddleware } from "../middleware/auth";
 import { adminMiddleware } from "../middleware/role";
@@ -23,5 +24,6 @@ router.post(
   adminMiddleware,
   processContestEnd
 );
+router.get("/get/by-user", authMiddleware, getUserContests);
 
 export default router;

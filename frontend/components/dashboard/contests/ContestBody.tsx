@@ -19,7 +19,7 @@ import SelectPrizeModal from "./SelectPrizeModal";
 import { getPrizeDetails, getQuestions } from "@/lib/common";
 
 type ContestBodyProps = React.FC<{
-  data: ContestType;
+  data: Maybe<ContestType>;
 }>;
 
 const ContestBody: ContestBodyProps = ({ data }) => {
