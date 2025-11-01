@@ -75,7 +75,12 @@ const getContest = async (req: Request, res: Response) => {
   }
   const contest = await Contest.findById(id)
     .populate("prizeId")
-    .populate("questions");
+    .populate({
+      path: "questions",
+      populate: {
+        path: "options",
+      },
+    });
   if (!contest) {
     return res.status(400).json(
       formatResponse({

@@ -1,7 +1,6 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 import React from "react";
 import Tab from "../Tab";
 import { usePathname } from "next/navigation";
@@ -31,6 +30,11 @@ const lists = [
     id: 5,
     name: "Users",
     href: "/dashboard/users",
+  },
+  {
+    id: 6,
+    name: "History",
+    href: "/dashboard/history",
   },
 ];
 

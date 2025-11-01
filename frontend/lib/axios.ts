@@ -31,8 +31,7 @@ axiosInstance.interceptors.response.use(
       const { message } = error.response.data || {};
       if (
         message === COMMON_MESSAGES.INVALID_AUTH_TOKEN ||
-        message === COMMON_MESSAGES.TOKEN_EXPIRED ||
-        message === COMMON_MESSAGES.UNAUTHORIZED
+        message === COMMON_MESSAGES.TOKEN_EXPIRED
       ) {
         localStorage.removeItem(LOCAL_KEYS.USER_DATA);
         toast.error("Token expired");

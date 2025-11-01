@@ -49,7 +49,7 @@ const QuestionsList: QuestionsListProps = ({
           </div>
         </div>
         <div>
-          <Link href="/dashboard/prizes/create">
+          <Link href="/dashboard/questions/create">
             <Button>Create</Button>
           </Link>
         </div>

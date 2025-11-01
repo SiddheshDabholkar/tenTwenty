@@ -30,4 +30,16 @@ const getQuestions = (
   return data.map((m) => m as QuestionType);
 };
 
-export { getUserFullName, getAnswerOptions, getPrizeDetails, getQuestions };
+const getQuestionsOptions = (
+  data: MaybeArray<MaybeString<AnswerOptionType>>
+) => {
+  return data.map((m) => m as AnswerOptionType);
+};
+
+export {
+  getUserFullName,
+  getAnswerOptions,
+  getPrizeDetails,
+  getQuestions,
+  getQuestionsOptions,
+};
