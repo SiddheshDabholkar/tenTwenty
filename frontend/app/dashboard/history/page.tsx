@@ -72,7 +72,7 @@ const History = () => {
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search user"
+              placeholder="Search contest"
               required
               className="max-w-[300px]"
             />

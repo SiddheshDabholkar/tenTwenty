@@ -256,24 +256,66 @@ const getAllSubmission = async (req: Request, res: Response) => {
 };
 
 const getUserSubmission = async (req: Request, res: Response) => {
-  const { skip = 0, limit = 10 } = req.query;
+  const { skip = 0, limit = 10, search } = req.query;
   const userId = req?.user?._id;
-  const contests = await Submission.find({
-    userId,
-  })
-    .populate({
-      path: "contestId",
-      select: "name description",
-    })
-    .skip(+skip)
-    .limit(+limit);
-  return res.status(200).json(
-    formatResponse({
-      message: SUBMISSION_MESSAGES.SUBMISSION_FETCH_SUCCESS,
-      data: contests,
-      success: true,
-    })
-  );
+
+  if (search) {
+    const pipeline: any[] = [
+      {
+        $match: { userId },
+      },
+      {
+        $lookup: {
+          from: "contests",
+          localField: "contestId",
+          foreignField: "_id",
+          as: "contestId",
+        },
+      },
+      {
+        $unwind: {
+          path: "$contestId",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $match: {
+          $or: [
+            { "contestId.name": { $regex: search, $options: "i" } },
+            { "contestId.description": { $regex: search, $options: "i" } },
+          ],
+        },
+      },
+      {
+        $skip: +skip,
+      },
+      {
+        $limit: +limit,
+      },
+    ];
+    const contests = await Submission.aggregate(pipeline);
+    return res.status(200).json(
+      formatResponse({
+        message: SUBMISSION_MESSAGES.SUBMISSION_FETCH_SUCCESS,
+        data: contests,
+        success: true,
+      })
+    );
+  } else {
+    const contests = await Submission.find({ userId })
+      .populate({
+        path: "contestId",
+      })
+      .skip(+skip)
+      .limit(+limit);
+    return res.status(200).json(
+      formatResponse({
+        message: SUBMISSION_MESSAGES.SUBMISSION_FETCH_SUCCESS,
+        data: contests,
+        success: true,
+      })
+    );
+  }
 };
 
 export {
