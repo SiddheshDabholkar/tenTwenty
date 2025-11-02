@@ -91,6 +91,31 @@ const getContest = async (req: Request, res: Response) => {
       })
     );
   }
+
+  const nowUTC = new Date();
+  const contestStartUTC = new Date(contest.startDateTime);
+  const contestEndUTC = new Date(contest.endDateTime);
+
+  if (nowUTC < contestStartUTC) {
+    return res.status(200).json(
+      formatResponse({
+        message: CONTEST_MESSAGES.CONTEST_NOT_STARTED,
+        data: contest,
+        success: true,
+      })
+    );
+  }
+
+  if (nowUTC >= contestEndUTC) {
+    return res.status(200).json(
+      formatResponse({
+        message: CONTEST_MESSAGES.CONTEST_ENDED,
+        data: contest,
+        success: true,
+      })
+    );
+  }
+
   return res.status(200).json(
     formatResponse({
       message: CONTEST_MESSAGES.CONTEST_FETCH_SUCCESS,

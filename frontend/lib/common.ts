@@ -64,6 +64,49 @@ const getErrorMessage = (msg: Maybe<TranslateKey>) => {
   return msg ? handleTranslate(msg) : "Something went wrong! Please try again.";
 };
 
+const getContestStatus = (contest: ContestType) => {
+  const nowUTC = new Date();
+  const contestStartUTC = new Date(contest.startDateTime);
+  const contestEndUTC = new Date(contest.endDateTime);
+
+  const status = (() => {
+    if (nowUTC < contestStartUTC) {
+      return "not-started";
+    }
+
+    if (nowUTC >= contestStartUTC && nowUTC < contestEndUTC) {
+      return "ongoing";
+    }
+
+    if (nowUTC >= contestEndUTC) {
+      return "ended";
+    }
+
+    return "unknown";
+  })();
+
+  const statusColor = (() => {
+    if (status === "not-started") {
+      return "blue";
+    }
+    if (status === "ongoing") {
+      return "green";
+    }
+    if (status === "ended") {
+      return "red";
+    }
+    return "gray";
+  })();
+
+  return {
+    status,
+    statusColor,
+    isContestsNotStarted: status === "not-started",
+    isContestEnded: status === "ended",
+    isContestOngoing: status === "ongoing",
+  };
+};
+
 export {
   getUserFullName,
   getAnswerOptions,
@@ -71,6 +114,7 @@ export {
   getQuestions,
   getQuestionsOptions,
   getContestDetails,
+  getContestStatus,
   getUserDetails,
   getErrorMessage,
 };

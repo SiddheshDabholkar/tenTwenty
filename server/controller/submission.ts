@@ -20,7 +20,7 @@ const triggerSubmission = async (req: Request, res: Response) => {
       formatResponse({
         message: SUBMISSION_MESSAGES.SUBMISSION_EXISTS,
         data: checkIfSubmissionExists,
-        success: false,
+        success: true,
       })
     );
   }

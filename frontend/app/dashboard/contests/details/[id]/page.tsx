@@ -1,5 +1,6 @@
 "use client";
 
+import ContestStatus from "@/components/dashboard/contests/ContestStatus";
 import Empty from "@/components/Empty";
 import LoadingList from "@/components/LoadingList";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { QUESTIONS_TYPES } from "@/constant/enums";
 import axiosInstance from "@/lib/axios";
 import {
+  getContestStatus,
   getErrorMessage,
   getQuestions,
   getQuestionsOptions,
@@ -33,10 +35,31 @@ const ContestDetails = () => {
   const [answers, setAnswers] = useState<AnswerState>({});
   const [submissionId, setSubmissionId] = useState<Maybe<string>>(null);
 
-  const triggerSubmission = async (contestId: string) => {
+  console.log({
+    submissionId,
+    data,
+  });
+
+  const triggerSubmission = async (
+    contestId: string,
+    data: Maybe<ContestType>
+  ) => {
+    console.log("data", data);
+    if (!data) {
+      return;
+    }
+    const { isContestEnded, isContestsNotStarted } = getContestStatus(data);
+
     const handleError = (msg: Maybe<TranslateKey>) => {
       toast.error(getErrorMessage(msg));
     };
+    console.log({
+      isContestsNotStarted,
+      isContestEnded,
+    });
+    if (isContestsNotStarted || isContestEnded) {
+      return;
+    }
     try {
       const { data: respData } = await axiosInstance.post(
         "submission/trigger",
@@ -67,8 +90,7 @@ const ContestDetails = () => {
       const { data: respData } = await axiosInstance.get(`contest/${id}`);
       if (respData.success) {
         setData(respData.data);
-        // Trigger submission when contest data is loaded
-        await triggerSubmission(id);
+        await triggerSubmission(id, respData.data);
       } else {
         handleError(respData.message);
       }
@@ -139,7 +161,7 @@ const ContestDetails = () => {
   if (!data) {
     return (
       <Empty
-        title="Question not found"
+        title="Contest not found"
         description="Please refresh the page or try again later."
       />
     );
@@ -173,6 +195,12 @@ const ContestDetails = () => {
       }
     });
   };
+
+  const { isContestEnded, isContestsNotStarted } = getContestStatus(data);
+
+  if (isContestsNotStarted || isContestEnded) {
+    return <ContestStatus data={data} />;
+  }
 
   return (
     <div>

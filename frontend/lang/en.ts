@@ -92,6 +92,8 @@ const contestMessages = {
   [CONTEST_MESSAGES.CONTEST_ALREADY_STARTED]:
     "This contest has already started.",
   [CONTEST_MESSAGES.QUESTIONS_REQUIRED]: "Questions are required.",
+  [CONTEST_MESSAGES.CONTEST_NOT_STARTED]: "Contest is not started yet.",
+  [CONTEST_MESSAGES.CONTEST_ENDED]: "Contest has ended.",
 };
 
 const prizesMessages = {

@@ -1,5 +1,7 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
+import { getContestStatus } from "@/lib/common";
 import { ContestType } from "@/types/schemas";
 import { Gamepad2 } from "lucide-react";
 import Link from "next/link";
@@ -11,6 +13,7 @@ type ContestCardProps = React.FC<{
   isPublic: boolean;
 }>;
 const ContestCard: ContestCardProps = ({ data, isAdmin, isPublic = false }) => {
+  const { status, statusColor } = getContestStatus(data);
   const url = isPublic
     ? `/auth/login`
     : `/dashboard/contests/details/${data._id}`;
@@ -25,10 +28,16 @@ const ContestCard: ContestCardProps = ({ data, isAdmin, isPublic = false }) => {
           <Gamepad2 />
         </span>
         <div className="flex flex-col">
-          <CardTitle className="mb-2">{data.name}</CardTitle>
+          <CardTitle className="mb-2">
+            {data.name}&nbsp;&nbsp;
+            <Badge style={{ background: statusColor, fontSize: "0.65rem" }}>
+              {status}
+            </Badge>
+          </CardTitle>
           <CardDescription className="mt-0 line-clamp-2">
             {data.description}
           </CardDescription>
+
           <div className="flex flex-row gap-2 mt-2">
             {!isPublic && (
               <Link href={`/dashboard/contests/leaderboard/${data._id}`}>
