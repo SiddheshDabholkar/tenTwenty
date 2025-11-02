@@ -2,10 +2,25 @@ import type { Request, Response } from "express";
 import { formatResponse } from "../utils/common";
 import { PRIZE_MESSAGES } from "../constant/message";
 import { Prize } from "../models/Prize";
+import { validatePrizePayload } from "../utils/validation";
 
 const createPrize = async (req: Request, res: Response) => {
   const { title, description } = req.body;
   const userId = req?.user?._id;
+
+  const validatedError = validatePrizePayload({
+    title,
+    description,
+  });
+  if (validatedError) {
+    return res.status(400).json(
+      formatResponse({
+        message: validatedError,
+        data: null,
+        success: false,
+      })
+    );
+  }
 
   const newPrize = await Prize.create({
     title,
@@ -32,11 +47,24 @@ const createPrize = async (req: Request, res: Response) => {
 };
 
 const updatePrize = async (req: Request, res: Response) => {
-  const { _id } = req.body;
+  const { _id, title, description } = req.body;
   if (!_id) {
     return res.status(400).json(
       formatResponse({
         message: PRIZE_MESSAGES.PRIZE_ID_REQUIRED,
+        data: null,
+        success: false,
+      })
+    );
+  }
+  const validatedError = validatePrizePayload({
+    title,
+    description,
+  });
+  if (validatedError) {
+    return res.status(400).json(
+      formatResponse({
+        message: validatedError,
         data: null,
         success: false,
       })

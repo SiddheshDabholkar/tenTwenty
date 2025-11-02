@@ -1,10 +1,11 @@
+import { ObjectId } from "mongoose";
 import { USER_ROLE } from "../constant/enums";
 import {
   CONTEST_MESSAGES,
+  PRIZE_MESSAGES,
   QUESTION_MESSAGES,
   USER_MESSAGES,
 } from "../constant/message";
-import { InputQuestionType } from "../types/common";
 
 const validateEmail = (email: string) => {
   return email.match(
@@ -49,56 +50,13 @@ const validateLoginPayload = ({
   return null;
 };
 
-type validateQuestionsProps = {
-  questions: InputQuestionType[];
-};
-const validateQuestions = ({ questions }: validateQuestionsProps) => {
-  const isValid = questions.every((q) => {
-    return q.question.trim().length > 0;
-  });
-  if (!isValid) {
-    return QUESTION_MESSAGES.QUESTION_REQUIRED;
-  }
-  const questionTooLong = questions.some((q) => {
-    return q.question.trim().length > 100;
-  });
-  if (questionTooLong) {
-    return QUESTION_MESSAGES.QUESTION_TOO_LONG;
-  }
-  const questionTooSmall = questions.some((q) => {
-    return q.question.trim().length < 3;
-  });
-  if (questionTooSmall) {
-    return QUESTION_MESSAGES.QUESTION_TOO_SMALL;
-  }
-  const isOptionsValid = questions.every((q) => {
-    return q.options.every((o) => o.option.trim().length > 0);
-  });
-  if (!isOptionsValid) {
-    return QUESTION_MESSAGES.OPTION_REQUIRED;
-  }
-  const optionTooLong = questions.some((q) => {
-    return q.options.some((o) => o.option.trim().length > 100);
-  });
-  if (optionTooLong) {
-    return QUESTION_MESSAGES.OPTION_TOO_LONG;
-  }
-  const optionTooSmall = questions.some((q) => {
-    return q.options.some((o) => o.option.trim().length < 3);
-  });
-  if (optionTooSmall) {
-    return QUESTION_MESSAGES.OPTION_TOO_SMALL;
-  }
-  return null;
-};
-
 type validateCreateContestPayloadProps = {
   name: string;
   description: string;
   startDateTime: Date;
   endDateTime: Date;
   role: USER_ROLE[];
-  questions: InputQuestionType[];
+  questions: ObjectId[];
 };
 const validateCreateContestPayload = ({
   name,
@@ -129,6 +87,59 @@ const validateCreateContestPayload = ({
   }
   if (startDateTime > endDateTime)
     return CONTEST_MESSAGES.CONTEST_STARTDATE_CAN_NOT_BE_AFTER_ENDDATE;
+  if (questions.length === 0) {
+    return CONTEST_MESSAGES.QUESTIONS_REQUIRED;
+  }
+  return null;
+};
+
+type validatePrizePayloadProps = {
+  title: string;
+  description: string;
+};
+const validatePrizePayload = ({
+  title,
+  description,
+}: validatePrizePayloadProps) => {
+  if (title.trim().length < 3) return PRIZE_MESSAGES.PRIZE_TITLE_TOO_SMALL;
+  if (title.trim().length > 40) return PRIZE_MESSAGES.PRIZE_TITLE_TOO_LARGE;
+  if (description.trim().length < 3)
+    return PRIZE_MESSAGES.PRIZE_DESCRIPTION_TOO_SMALL;
+  if (description.trim().length > 500)
+    return PRIZE_MESSAGES.PRIZE_DESCRIPTION_TOO_LARGE;
+  return null;
+};
+
+type validateQuestionPayloadProps = {
+  question: string;
+  type: string;
+  options: {
+    option: string;
+    isCorrect: boolean;
+  }[];
+};
+const validateQuestionPayload = ({
+  question,
+  type,
+  options,
+}: validateQuestionPayloadProps) => {
+  if (question.trim().length < 3) return QUESTION_MESSAGES.QUESTION_TOO_SMALL;
+  if (question.trim().length > 100) return QUESTION_MESSAGES.QUESTION_TOO_LONG;
+  if (!type) {
+    return QUESTION_MESSAGES.QUESTION_TYPE_REQUIRED;
+  }
+  const atleastOneCorrect = options.some((o) => o.isCorrect);
+  if (!atleastOneCorrect) {
+    return QUESTION_MESSAGES.ATLEAST_ONE_CORRECT_REQUIRED;
+  }
+  const optionSmall = options.some((o) => o.option.trim().length < 3);
+  if (optionSmall) {
+    return QUESTION_MESSAGES.OPTION_TOO_SMALL;
+  }
+  const optionLarge = options.some((o) => o.option.trim().length > 100);
+  if (optionLarge) {
+    return QUESTION_MESSAGES.OPTION_TOO_LONG;
+  }
   return null;
 };
 
@@ -136,4 +147,6 @@ export {
   validateRegisterPayload,
   validateLoginPayload,
   validateCreateContestPayload,
+  validatePrizePayload,
+  validateQuestionPayload,
 };

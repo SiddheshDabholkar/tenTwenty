@@ -5,10 +5,26 @@ import { Question } from "../models/Question";
 import { AnswerOption } from "../models/AnswerOption";
 import { QUESTIONS_TYPES } from "../constant/enums";
 import { Contest } from "../models/Contest";
+import { validateQuestionPayload } from "../utils/validation";
 
 const createQuestion = async (req: Request, res: Response) => {
   const { question, type, options } = req.body;
   const userId = req?.user?._id;
+
+  const validatedError = validateQuestionPayload({
+    question,
+    type,
+    options,
+  });
+  if (validatedError) {
+    return res.status(400).json(
+      formatResponse({
+        message: validatedError,
+        data: null,
+        success: false,
+      })
+    );
+  }
 
   const newQuestion = await Question.create({
     question,
@@ -60,6 +76,21 @@ const updateQuestion = async (req: Request, res: Response) => {
     return res.status(400).json(
       formatResponse({
         message: QUESTION_MESSAGES.QUESTION_ID_REQUIRED,
+        data: null,
+        success: false,
+      })
+    );
+  }
+
+  const validatedError = validateQuestionPayload({
+    question,
+    type,
+    options,
+  });
+  if (validatedError) {
+    return res.status(400).json(
+      formatResponse({
+        message: validatedError,
         data: null,
         success: false,
       })

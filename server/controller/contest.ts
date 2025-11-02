@@ -4,7 +4,6 @@ import { Contest } from "../models/Contest";
 import { CONTEST_MESSAGES } from "../constant/message";
 import { Request, Response } from "express";
 import { handleContestEnd } from "../utils/contestScheduler";
-import { Submission } from "../models/Submission";
 import { USER_ROLE } from "../constant/enums";
 
 const createContest = async (req: Request, res: Response) => {
@@ -179,6 +178,23 @@ const updateContest = async (req: Request, res: Response) => {
       })
     );
   }
+  const validatedError = validateCreateContestPayload({
+    name,
+    description,
+    startDateTime,
+    endDateTime,
+    questions,
+    role,
+  });
+  if (validatedError) {
+    return res.status(400).json(
+      formatResponse({
+        message: validatedError,
+        data: null,
+        success: false,
+      })
+    );
+  }
   const contest = await Contest.findById(_id);
   if (!contest) {
     return res.status(400).json(
@@ -202,23 +218,6 @@ const updateContest = async (req: Request, res: Response) => {
     return res.status(400).json(
       formatResponse({
         message: CONTEST_MESSAGES.CONTEST_ALREADY_STARTED,
-        data: null,
-        success: false,
-      })
-    );
-  }
-  const validatedError = validateCreateContestPayload({
-    name,
-    description,
-    startDateTime,
-    endDateTime,
-    questions,
-    role,
-  });
-  if (validatedError) {
-    return res.status(400).json(
-      formatResponse({
-        message: validatedError,
         data: null,
         success: false,
       })

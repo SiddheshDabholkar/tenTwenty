@@ -57,6 +57,9 @@ const questionMessages = {
   [QUESTION_MESSAGES.QUESTION_CREATE_FAILED]: "Question creation failed.",
   [QUESTION_MESSAGES.QUESTION_USED_BY_CONTEST]:
     "Question is used by contest. Cannot be deleted.",
+  [QUESTION_MESSAGES.QUESTION_TYPE_REQUIRED]: "Question type is required.",
+  [QUESTION_MESSAGES.ATLEAST_ONE_CORRECT_REQUIRED]:
+    "Atleast one correct answer is required.",
 };
 
 const contestMessages = {
@@ -88,6 +91,7 @@ const contestMessages = {
   [CONTEST_MESSAGES.CONTEST_ALREADY_ENDED]: "This contest has already ended.",
   [CONTEST_MESSAGES.CONTEST_ALREADY_STARTED]:
     "This contest has already started.",
+  [CONTEST_MESSAGES.QUESTIONS_REQUIRED]: "Questions are required.",
 };
 
 const prizesMessages = {
@@ -101,6 +105,12 @@ const prizesMessages = {
   [PRIZE_MESSAGES.PRIZE_DELETE_SUCCESS]: "Prize deleted successfully.",
   [PRIZE_MESSAGES.PRIZE_DELETE_FAILED]: "Failed to delete prize.",
   [PRIZE_MESSAGES.PRIZE_ID_REQUIRED]: "Prize ID is required.",
+  [PRIZE_MESSAGES.PRIZE_TITLE_TOO_SMALL]: "Prize title is too short.",
+  [PRIZE_MESSAGES.PRIZE_TITLE_TOO_LARGE]: "Prize title is too long.",
+  [PRIZE_MESSAGES.PRIZE_DESCRIPTION_TOO_SMALL]:
+    "Prize description is too short.",
+  [PRIZE_MESSAGES.PRIZE_DESCRIPTION_TOO_LARGE]:
+    "Prize description is too long.",
 };
 
 const submissionMessages = {
