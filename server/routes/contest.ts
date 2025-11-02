@@ -5,7 +5,6 @@ import {
   getContest,
   updateContest,
   deleteContest,
-  processContestEnd,
   getUserContests,
 } from "../controller/contest";
 import { authMiddleware } from "../middleware/auth";
@@ -18,12 +17,6 @@ router.put("/update", authMiddleware, adminMiddleware, updateContest);
 router.get("/:id", getContest);
 router.get("/get/all", authMiddleware, adminMiddleware, getAllContest);
 router.delete("/delete/:id", authMiddleware, adminMiddleware, deleteContest);
-router.post(
-  "/process-end/:id",
-  authMiddleware,
-  adminMiddleware,
-  processContestEnd
-);
 router.get("/get/by-user", authMiddleware, getUserContests);
 router.get("/get/public/all", getAllContest);
 
