@@ -7,12 +7,15 @@ import { errorMiddleware } from "./middleware/error";
 import { initContestScheduler } from "./utils/contestScheduler";
 import { limiter } from "./middleware/ratelimit";
 
+const allowedOrigins = FRONTEND_URL?.split(",") ?? [];
+console.log("allowedOrigins", allowedOrigins);
+
 const app = express();
 
 app.use(express.json());
 app.use(
   cors({
-    origin: FRONTEND_URL?.split(",") ?? [],
+    origin: allowedOrigins,
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
