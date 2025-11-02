@@ -23,4 +23,6 @@ const wonBySchema = new Schema(
   { timestamps: true }
 );
 
+wonBySchema.index({ contestId: 1, userId: 1 }, { unique: true });
+
 export const Wonby = model<WonbyType>(SCHEMAS.WON_BY, wonBySchema);
