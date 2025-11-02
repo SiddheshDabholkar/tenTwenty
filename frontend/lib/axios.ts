@@ -9,38 +9,6 @@ const axiosInstance = axios.create({
   timeout: 50000,
 });
 
-// Helper function to recursively convert date strings to Date objects
-const convertDates = (data: any): any => {
-  if (data === null || data === undefined) {
-    return data;
-  }
-
-  if (typeof data === "string") {
-    // Check if string matches ISO 8601 date format
-    const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?$/;
-    if (isoDateRegex.test(data)) {
-      return new Date(data);
-    }
-    return data;
-  }
-
-  if (Array.isArray(data)) {
-    return data.map(convertDates);
-  }
-
-  if (typeof data === "object") {
-    const converted: any = {};
-    for (const key in data) {
-      if (data.hasOwnProperty(key)) {
-        converted[key] = convertDates(data[key]);
-      }
-    }
-    return converted;
-  }
-
-  return data;
-};
-
 axiosInstance.interceptors.request.use(
   (config) => {
     const localUser = localStorage.getItem(LOCAL_KEYS.USER_DATA);
@@ -58,10 +26,6 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   (response) => {
-    // Convert date strings to Date objects in response data
-    if (response.data) {
-      response.data = convertDates(response.data);
-    }
     return response;
   },
   (error) => {
