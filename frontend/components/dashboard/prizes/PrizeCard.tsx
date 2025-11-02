@@ -40,7 +40,7 @@ const Wrapper: PrizeCardProps = ({
   if (isSelect) {
     return (
       <div
-        className="flex flex-row items-center gap-2"
+        className="flex flex-row items-center gap-2 cursor-pointer"
         onClick={() => {
           onSelect(data);
         }}
@@ -48,9 +48,9 @@ const Wrapper: PrizeCardProps = ({
         <div className="flex items-center gap-3">
           <Checkbox
             checked={isSelected}
-            onCheckedChange={() => {
-              onSelect(data);
-            }}
+            // onCheckedChange={() => {
+            //   onSelect(data);
+            // }}
           />
         </div>
         <PrizeInfo data={data} />

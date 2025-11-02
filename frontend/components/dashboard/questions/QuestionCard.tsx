@@ -61,18 +61,18 @@ const Wrapper: WrapperProps = ({
   if (isSelect) {
     return (
       <div
-        className="flex flex-row items-center gap-2"
+        className="flex flex-row items-center gap-2 cursor-pointer"
         onClick={() => {
           onSelect(data);
         }}
       >
         <div className="flex items-center gap-3">
           <Checkbox
-            id="terms"
+            id={data._id}
             checked={isSelected}
-            onCheckedChange={() => {
-              onSelect(data);
-            }}
+            // onCheckedChange={() => {
+            //   onSelect(data);
+            // }}
           />
         </div>
         <QuestionInfo data={data} />
