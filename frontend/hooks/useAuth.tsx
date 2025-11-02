@@ -41,6 +41,7 @@ const useAuth = () => {
       setIsRegistering(false);
     };
     try {
+      setIsRegistering(true);
       const validationError = validateRegisterPayload({
         email,
         password,
@@ -77,6 +78,7 @@ const useAuth = () => {
       setIsLoggingIn(false);
     };
     try {
+      setIsLoggingIn(true);
       const validationError = validateLoginPayload({
         email,
         password,
