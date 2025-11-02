@@ -3,6 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Maybe } from "@/types/common";
 import { PrizeType } from "@/types/schemas";
 import { Trophy } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 
 type PrizeCardProps = React.FC<{
@@ -56,7 +57,11 @@ const Wrapper: PrizeCardProps = ({
       </div>
     );
   }
-  return <PrizeInfo data={data} />;
+  return (
+    <Link href={`/dashboard/prizes/edit/${data._id}`}>
+      <PrizeInfo data={data} />
+    </Link>
+  );
 };
 
 type PrizeInfoProps = React.FC<{
