@@ -319,7 +319,8 @@ const getUserSubmission = async (req: Request, res: Response) => {
 };
 
 const getLeaderboard = async (req: Request, res: Response) => {
-  const { id, skip = 0, limit = 10 } = req.params;
+  const { skip = 0, limit = 10 } = req.query;
+  const { id } = req.params;
   if (!id) {
     return res.status(400).json(
       formatResponse({
