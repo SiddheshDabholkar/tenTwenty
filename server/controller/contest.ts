@@ -87,6 +87,7 @@ const getContest = async (req: Request, res: Response) => {
   const submission = await Submission.findOne({
     contestId: id,
     userId,
+    submittedAt: { $exists: true },
   });
   console.log({
     userId,
