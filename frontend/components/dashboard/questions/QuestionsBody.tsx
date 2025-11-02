@@ -16,6 +16,8 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 import { getAnswerOptions, getErrorMessage } from "@/lib/common";
+import { validateQuestionPayload } from "@/lib/validation";
+import { handleTranslate } from "@/lib/translate";
 
 type QuestionsBodyProps = React.FC<{
   data: Maybe<QuestionType>;
@@ -48,6 +50,16 @@ const QuestionsBody: QuestionsBodyProps = ({ data }) => {
       setIsUpdating(false);
     };
     try {
+      const validateError = validateQuestionPayload({
+        question,
+        type,
+        options,
+      });
+      if (validateError) {
+        toast.error(handleTranslate(validateError));
+        return;
+      }
+
       setIsUpdating(true);
       const { data: respData } = await axiosInstance.put("question/update", {
         _id: data?._id,
@@ -73,6 +85,15 @@ const QuestionsBody: QuestionsBodyProps = ({ data }) => {
       setIsCreating(false);
     };
     try {
+      const validateError = validateQuestionPayload({
+        question,
+        type,
+        options,
+      });
+      if (validateError) {
+        toast.error(handleTranslate(validateError));
+        return;
+      }
       setIsCreating(true);
       const { data: respData } = await axiosInstance.post("question/create", {
         question,

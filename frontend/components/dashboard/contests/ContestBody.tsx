@@ -17,6 +17,8 @@ import { ContestType, PrizeType, QuestionType } from "@/types/schemas";
 import { Card } from "@/components/ui/card";
 import SelectPrizeModal from "./SelectPrizeModal";
 import { getErrorMessage, getPrizeDetails, getQuestions } from "@/lib/common";
+import { validateCreateContestPayload } from "@/lib/validation";
+import { handleTranslate } from "@/lib/translate";
 
 type ContestBodyProps = React.FC<{
   data: Maybe<ContestType>;
@@ -40,6 +42,20 @@ const ContestBody: ContestBodyProps = ({ data }) => {
       toast.error(getErrorMessage(msg));
       setIsCreating(false);
     };
+
+    const validationError = validateCreateContestPayload({
+      name: title,
+      description,
+      startDateTime,
+      endDateTime,
+      role: [role],
+      questions: questions.map((m) => m._id),
+      prize: prize?._id ?? "",
+    });
+    if (validationError) {
+      toast.error(handleTranslate(validationError));
+      return;
+    }
 
     try {
       setIsCreating(true);
@@ -71,6 +87,20 @@ const ContestBody: ContestBodyProps = ({ data }) => {
     };
 
     try {
+      const validationError = validateCreateContestPayload({
+        name: title,
+        description,
+        startDateTime,
+        endDateTime,
+        role: [role],
+        questions: questions.map((m) => m._id),
+        prize: prize?._id ?? "",
+      });
+      if (validationError) {
+        toast.error(handleTranslate(validationError));
+        return;
+      }
+
       setIsUpdating(true);
       const { data: respData } = await axiosInstance.put("contest/update", {
         _id: data?._id,
@@ -178,9 +208,11 @@ const ContestBody: ContestBodyProps = ({ data }) => {
                     }
                   }}
                 />
-                <p className="bg-green-100 text-[0.85rem] w-fit px-2 rounded-sm py-1">
-                  Prize selected
-                </p>
+                {prize && (
+                  <p className="bg-green-100 text-[0.85rem] w-fit px-2 rounded-sm py-1">
+                    Prize selected
+                  </p>
+                )}
               </Card>
 
               <DateTimeInput

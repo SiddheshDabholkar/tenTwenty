@@ -12,6 +12,8 @@ import { toast } from "sonner";
 import axiosInstance from "@/lib/axios";
 import { Maybe, TranslateKey } from "@/types/common";
 import { getErrorMessage } from "@/lib/common";
+import { validatePrizePayload } from "@/lib/validation";
+import { handleTranslate } from "@/lib/translate";
 
 type PrizeBodyProps = React.FC<{
   data: Maybe<PrizeType>;
@@ -30,6 +32,16 @@ const PrizeBody: PrizeBodyProps = ({ data }) => {
       toast.error(getErrorMessage(msg));
       setIsCreating(false);
     };
+
+    const validateError = validatePrizePayload({
+      title,
+      description,
+    });
+    if (validateError) {
+      toast.error(handleTranslate(validateError));
+      return;
+    }
+
     try {
       const { data: respData } = await axiosInstance.post("prize/create", {
         title,
@@ -53,6 +65,14 @@ const PrizeBody: PrizeBodyProps = ({ data }) => {
       setIsUpdating(false);
     };
     try {
+      const validateError = validatePrizePayload({
+        title,
+        description,
+      });
+      if (validateError) {
+        toast.error(handleTranslate(validateError));
+        return;
+      }
       setIsUpdating(true);
       const { data: respData } = await axiosInstance.put("prize/update", {
         _id: data?._id,

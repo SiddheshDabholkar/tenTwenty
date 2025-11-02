@@ -57,6 +57,7 @@ type validateCreateContestPayloadProps = {
   endDateTime: Date;
   role: USER_ROLE[];
   questions: ObjectId[];
+  prize: string;
 };
 const validateCreateContestPayload = ({
   name,
@@ -65,6 +66,7 @@ const validateCreateContestPayload = ({
   endDateTime,
   role,
   questions,
+  prize,
 }: validateCreateContestPayloadProps) => {
   if (name.trim().length < 3) return CONTEST_MESSAGES.CONTEST_NAME_TOO_SMALL;
   if (name.trim().length > 20) return CONTEST_MESSAGES.CONTEST_NAME_TOO_LARGE;
@@ -78,6 +80,9 @@ const validateCreateContestPayload = ({
   if (role.length === 0) {
     return CONTEST_MESSAGES.ROLE_REQUIRED;
   }
+  if (!prize) {
+    return CONTEST_MESSAGES.PRIZE_REQUIRED;
+  }
   const invalidRole = role.filter((r) => !Object.values(USER_ROLE).includes(r));
   if (invalidRole.length > 0) {
     return CONTEST_MESSAGES.INVALID_ROLE;
@@ -85,8 +90,27 @@ const validateCreateContestPayload = ({
   if (!endDateTime) {
     return CONTEST_MESSAGES.END_DATE_REQUIRED;
   }
-  if (startDateTime > endDateTime)
+  if (startDateTime > endDateTime) {
     return CONTEST_MESSAGES.CONTEST_STARTDATE_CAN_NOT_BE_AFTER_ENDDATE;
+  }
+  if (startDateTime === endDateTime) {
+    return CONTEST_MESSAGES.START_DATE_TIME_AND_END_DATE_TIME_CANNOT_BE_SAME;
+  }
+  const contestStartUTC = new Date(startDateTime);
+  const contestEndUTC = new Date(endDateTime);
+  const endDateTimeInMs = contestEndUTC.getTime();
+  const startDateTimeInMs = contestStartUTC.getTime();
+  const diff = endDateTimeInMs - startDateTimeInMs;
+  console.log({
+    startDateTime,
+    endDateTime,
+    endDateTimeInMs,
+    startDateTimeInMs,
+    diff,
+  });
+  if (diff < 30 * 60 * 1000) {
+    return CONTEST_MESSAGES.CONTEST_SHOULD_BE_FOR_ATLEAST_30_MINS;
+  }
   if (questions.length === 0) {
     return CONTEST_MESSAGES.QUESTIONS_REQUIRED;
   }

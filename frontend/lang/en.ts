@@ -94,6 +94,11 @@ const contestMessages = {
   [CONTEST_MESSAGES.QUESTIONS_REQUIRED]: "Questions are required.",
   [CONTEST_MESSAGES.CONTEST_NOT_STARTED]: "Contest is not started yet.",
   [CONTEST_MESSAGES.CONTEST_ENDED]: "Contest has ended.",
+  [CONTEST_MESSAGES.PRIZE_REQUIRED]: "Prize is required.",
+  [CONTEST_MESSAGES.START_DATE_TIME_AND_END_DATE_TIME_CANNOT_BE_SAME]:
+    "Start date and end date cannot be same.",
+  [CONTEST_MESSAGES.CONTEST_SHOULD_BE_FOR_ATLEAST_30_MINS]:
+    "Contest should be for atleast 30 mins.",
 };
 
 const prizesMessages = {

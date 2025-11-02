@@ -25,6 +25,7 @@ const createContest = async (req: Request, res: Response) => {
     endDateTime,
     questions,
     role,
+    prize,
   });
   if (validatedError) {
     return res.status(400).json(
@@ -235,6 +236,7 @@ const updateContest = async (req: Request, res: Response) => {
     endDateTime,
     questions,
     role,
+    prize,
   });
   if (validatedError) {
     return res.status(400).json(
