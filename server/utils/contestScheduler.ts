@@ -26,11 +26,23 @@ const handleContestEnd = async (contestId: string) => {
 
     const winningSubmission = submissions[0];
 
-    const wonByRecord = await Wonby.create({
+    let wonByRecord = await Wonby.findOne({
       contestId: contest._id,
       userId: winningSubmission.userId,
-      submissionId: winningSubmission._id,
     });
+
+    if (!wonByRecord) {
+      wonByRecord = await Wonby.create({
+        contestId: contest._id,
+        userId: winningSubmission.userId,
+        submissionId: winningSubmission._id,
+      });
+      console.log(`Created new WonBy record for contest ${contestId}`);
+    } else {
+      console.log(
+        `WonBy record already exists for contest ${contestId} and user ${winningSubmission.userId}`
+      );
+    }
 
     await Contest.findByIdAndUpdate(contestId, {
       wonBy: wonByRecord._id,
