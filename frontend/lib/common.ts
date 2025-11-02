@@ -1,4 +1,4 @@
-import { Maybe, MaybeArray, MaybeString } from "@/types/common";
+import { Maybe, MaybeArray, MaybeString, TranslateKey } from "@/types/common";
 import {
   AnswerOptionType,
   ContestType,
@@ -6,6 +6,7 @@ import {
   QuestionType,
   UserType,
 } from "@/types/schemas";
+import { handleTranslate } from "./translate";
 
 const getUserFullName = (user: UserType) => {
   return `${user.firstName} ${user.lastName}`;
@@ -59,6 +60,10 @@ const getUserDetails = (data: MaybeString<UserType> | Maybe<UserType>) => {
   return null;
 };
 
+const getErrorMessage = (msg: Maybe<TranslateKey>) => {
+  return msg ? handleTranslate(msg) : "Something went wrong! Please try again.";
+};
+
 export {
   getUserFullName,
   getAnswerOptions,
@@ -67,4 +72,5 @@ export {
   getQuestionsOptions,
   getContestDetails,
   getUserDetails,
+  getErrorMessage,
 };

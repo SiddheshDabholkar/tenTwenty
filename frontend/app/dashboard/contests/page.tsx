@@ -9,7 +9,8 @@ import { USER_ROLE } from "@/constant/enums";
 import useDebouncedSearch from "@/hooks/useDebouncedSearch";
 import { useUser } from "@/hooks/useUser";
 import axiosInstance from "@/lib/axios";
-import { MaybeArray } from "@/types/common";
+import { getErrorMessage } from "@/lib/common";
+import { Maybe, MaybeArray, TranslateKey } from "@/types/common";
 import { ContestType } from "@/types/schemas";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -33,8 +34,8 @@ const Contests = () => {
     search: string;
   };
   const fetchData = async ({ skip, search }: fetchDataProps) => {
-    const handleError = () => {
-      toast.error("Something went wrong. Please try again later.");
+    const handleError = (msg: Maybe<TranslateKey>) => {
+      toast.error(getErrorMessage(msg));
       setIsLoading(false);
     };
     try {
@@ -56,11 +57,12 @@ const Contests = () => {
         setHasMore(length >= LIMIT);
         setSkip(+skip + LIMIT);
       } else {
+        handleError(data.message);
       }
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
-      handleError();
+      handleError(null);
     }
   };
 

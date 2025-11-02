@@ -12,11 +12,11 @@ import DateTimeInput from "../DateTimeInput";
 import SelectRole from "./SelectRole";
 import { USER_ROLE } from "@/constant/enums";
 import SelectQuestionsModal from "./SelectQuestionsModal";
-import { Maybe, MaybeArray } from "@/types/common";
+import { Maybe, MaybeArray, TranslateKey } from "@/types/common";
 import { ContestType, PrizeType, QuestionType } from "@/types/schemas";
 import { Card } from "@/components/ui/card";
 import SelectPrizeModal from "./SelectPrizeModal";
-import { getPrizeDetails, getQuestions } from "@/lib/common";
+import { getErrorMessage, getPrizeDetails, getQuestions } from "@/lib/common";
 
 type ContestBodyProps = React.FC<{
   data: Maybe<ContestType>;
@@ -36,8 +36,8 @@ const ContestBody: ContestBodyProps = ({ data }) => {
   const [prize, setPrize] = useState<Maybe<PrizeType>>(null);
 
   const handleCreateContest = async () => {
-    const handleError = () => {
-      toast.error("Something went wrong! Please try again.");
+    const handleError = (msg: Maybe<TranslateKey>) => {
+      toast.error(getErrorMessage(msg));
       setIsCreating(false);
     };
 
@@ -56,17 +56,17 @@ const ContestBody: ContestBodyProps = ({ data }) => {
         toast.success("Contest created successfully!");
         router.push("/dashboard");
       } else {
-        handleError();
+        handleError(respData.message);
       }
       setIsCreating(false);
     } catch (error) {
-      handleError();
+      handleError(null);
     }
   };
 
   const handleUpdateContest = async () => {
-    const handleError = () => {
-      toast.error("Something went wrong! Please try again.");
+    const handleError = (msg: Maybe<TranslateKey>) => {
+      toast.error(getErrorMessage(msg));
       setIsUpdating(false);
     };
 
@@ -86,11 +86,11 @@ const ContestBody: ContestBodyProps = ({ data }) => {
         toast.success("Contest updated successfully!");
         router.push("/dashboard/contests");
       } else {
-        handleError();
+        handleError(respData.message);
       }
       setIsUpdating(false);
     } catch (error) {
-      handleError();
+      handleError(null);
     }
   };
 

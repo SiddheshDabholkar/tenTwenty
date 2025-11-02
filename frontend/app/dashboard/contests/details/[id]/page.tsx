@@ -1,5 +1,7 @@
 "use client";
 
+import Empty from "@/components/Empty";
+import LoadingList from "@/components/LoadingList";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -7,8 +9,12 @@ import { Field, FieldLabel } from "@/components/ui/field";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { QUESTIONS_TYPES } from "@/constant/enums";
 import axiosInstance from "@/lib/axios";
-import { getQuestions, getQuestionsOptions } from "@/lib/common";
-import { Maybe } from "@/types/common";
+import {
+  getErrorMessage,
+  getQuestions,
+  getQuestionsOptions,
+} from "@/lib/common";
+import { Maybe, TranslateKey } from "@/types/common";
 import { ContestType, QuestionType } from "@/types/schemas";
 import { useParams, useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
@@ -28,6 +34,9 @@ const ContestDetails = () => {
   const [submissionId, setSubmissionId] = useState<Maybe<string>>(null);
 
   const triggerSubmission = async (contestId: string) => {
+    const handleError = (msg: Maybe<TranslateKey>) => {
+      toast.error(getErrorMessage(msg));
+    };
     try {
       const { data: respData } = await axiosInstance.post(
         "submission/trigger",
@@ -36,22 +45,21 @@ const ContestDetails = () => {
       if (respData.success) {
         setSubmissionId(respData.data._id);
         return respData.data._id;
-      } else if (respData.data) {
-        setSubmissionId(respData.data._id);
-        return respData.data._id;
+      } else {
+        handleError(respData.message);
       }
     } catch (error) {
+      handleError(null);
       console.error("triggerSubmission error", error);
-      toast.error("Failed to start contest. Please try again.");
     }
     return null;
   };
 
   const fetchData = useCallback(async (id: string) => {
-    const handleError = () => {
+    const handleError = (msg: Maybe<TranslateKey>) => {
       setIsLoading(false);
       setData(null);
-      toast.error("Something went wrong! Please try again.");
+      toast.error(getErrorMessage(msg));
     };
 
     try {
@@ -62,17 +70,17 @@ const ContestDetails = () => {
         // Trigger submission when contest data is loaded
         await triggerSubmission(id);
       } else {
-        handleError();
+        handleError(respData.message);
       }
       setIsLoading(false);
     } catch {
-      handleError();
+      handleError(null);
     }
   }, []);
 
   const handleSubmit = async () => {
-    const handleError = () => {
-      toast.error("Something went wrong! Please try again.");
+    const handleError = (msg: Maybe<TranslateKey>) => {
+      toast.error(getErrorMessage(msg));
       setIsSubmitting(false);
     };
 
@@ -109,12 +117,12 @@ const ContestDetails = () => {
         toast.success("Submission successful!");
         router.push("/dashboard/contests");
       } else {
-        handleError();
+        handleError(respData.message);
       }
       setIsSubmitting(false);
     } catch (error) {
       console.error("handleSubmit error", error);
-      handleError();
+      handleError(null);
     }
   };
 
@@ -125,11 +133,16 @@ const ContestDetails = () => {
   }, [id, fetchData]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingList />;
   }
 
   if (!data) {
-    return <div>No data</div>;
+    return (
+      <Empty
+        title="Question not found"
+        description="Please refresh the page or try again later."
+      />
+    );
   }
 
   const typedQuestions = getQuestions(data.questions);

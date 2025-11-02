@@ -45,6 +45,7 @@ const useQuestions = () => {
         setHasMore(length >= LIMIT);
         setSkip(+skip + LIMIT);
       } else {
+        handleError();
       }
       setIsLoading(false);
     } catch (error) {

@@ -3,7 +3,7 @@
 import { Input } from "@/components/ui/input";
 import useDebouncedSearch from "@/hooks/useDebouncedSearch";
 import axiosInstance from "@/lib/axios";
-import { MaybeArray } from "@/types/common";
+import { Maybe, MaybeArray, TranslateKey } from "@/types/common";
 import { UserType } from "@/types/schemas";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -11,6 +11,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import UserCard from "@/components/dashboard/users/UserCard";
 import LoadingList from "@/components/LoadingList";
 import Empty from "@/components/Empty";
+import { getErrorMessage } from "@/lib/common";
 
 const LIMIT = 10;
 
@@ -27,8 +28,8 @@ const Users = () => {
     search: string;
   };
   const fetchData = async ({ skip, search }: fetchDataProps) => {
-    const handleError = () => {
-      toast.error("Something went wrong. Please try again later.");
+    const handleError = (msg: Maybe<TranslateKey>) => {
+      toast.error(getErrorMessage(msg));
       setIsLoading(false);
     };
     try {
@@ -50,11 +51,12 @@ const Users = () => {
         setHasMore(length >= LIMIT);
         setSkip(+skip + LIMIT);
       } else {
+        handleError(data.message);
       }
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
-      handleError();
+      handleError(null);
     }
   };
 

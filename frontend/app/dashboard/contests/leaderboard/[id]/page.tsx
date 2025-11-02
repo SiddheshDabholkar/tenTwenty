@@ -1,8 +1,11 @@
 "use client";
 
 import LeaderboardCard from "@/components/dashboard/contests/LeaderboardCard";
+import Empty from "@/components/Empty";
+import LoadingList from "@/components/LoadingList";
 import axiosInstance from "@/lib/axios";
-import { MaybeArray } from "@/types/common";
+import { getErrorMessage } from "@/lib/common";
+import { Maybe, MaybeArray, TranslateKey } from "@/types/common";
 import { SubmissionType } from "@/types/schemas";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -14,6 +17,11 @@ const Leaderboard = () => {
   const [data, setData] = useState<MaybeArray<SubmissionType>>([]);
 
   const fetchData = async (id: string) => {
+    const handleError = (msg: Maybe<TranslateKey>) => {
+      toast.error(getErrorMessage(msg));
+      setIsLoading(false);
+    };
+
     setIsLoading(true);
     try {
       const { data: respData } = await axiosInstance.get(
@@ -22,12 +30,11 @@ const Leaderboard = () => {
       if (respData.success) {
         setData(respData.data);
       } else {
-        toast.error("Failed to fetch leaderboard. Please try again.");
+        handleError(respData.message);
       }
       setIsLoading(false);
     } catch (error) {
-      toast.error("Failed to fetch leaderboard. Please try again.");
-      setIsLoading(false);
+      handleError(null);
     }
   };
 
@@ -38,7 +45,16 @@ const Leaderboard = () => {
   }, [id]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingList />;
+  }
+
+  if (!data.length) {
+    return (
+      <Empty
+        title="No submissions found"
+        description="Please refresh the page or try again later."
+      />
+    );
   }
 
   return (

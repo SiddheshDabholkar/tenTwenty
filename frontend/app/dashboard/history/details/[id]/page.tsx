@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import axiosInstance from "@/lib/axios";
-import { Maybe } from "@/types/common";
+import { Maybe, TranslateKey } from "@/types/common";
 import {
   AnswerOptionType,
   QuestionAnswerType,
@@ -19,6 +19,9 @@ import SubmissionSummary from "@/components/dashboard/submission/SubmissionSumma
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import { getErrorMessage } from "@/lib/common";
+import LoadingList from "@/components/LoadingList";
+import Empty from "@/components/Empty";
 
 const SubmissionDetails = () => {
   const { id } = useParams();
@@ -27,20 +30,23 @@ const SubmissionDetails = () => {
   const [data, setData] = useState<Maybe<SubmissionType>>(null);
 
   const fetchData = useCallback(async (id: string) => {
-    const handleError = () => {
+    const handleError = (msg: Maybe<TranslateKey>) => {
+      toast.error(getErrorMessage(msg));
       setIsLoading(false);
       setData(null);
-      toast.error("Something went wrong! Please try again.");
     };
 
     try {
       setIsLoading(true);
       const { data: respData } = await axiosInstance.get(`submission/${id}`);
-      if (respData.success) setData(respData.data);
-      else handleError();
+      if (respData.success) {
+        setData(respData.data);
+      } else {
+        handleError(respData.message);
+      }
       setIsLoading(false);
     } catch {
-      handleError();
+      handleError(null);
     }
   }, []);
 
@@ -48,27 +54,18 @@ const SubmissionDetails = () => {
     if (id) fetchData(String(id));
   }, [id, fetchData]);
 
-  if (isLoading)
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-lg text-muted-foreground animate-pulse">
-          Loading submission details...
-        </p>
-      </div>
-    );
+  if (isLoading) {
+    return <LoadingList />;
+  }
 
-  if (!data)
+  if (!data) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-        <p className="text-lg text-muted-foreground">No submission found</p>
-        <Button
-          variant="outline"
-          onClick={() => router.push("/dashboard/history")}
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" /> Back to History
-        </Button>
-      </div>
+      <Empty
+        title="History not found"
+        description="Please refresh the page or try again later."
+      />
     );
+  }
 
   return (
     <div className="space-y-8 mb-8">

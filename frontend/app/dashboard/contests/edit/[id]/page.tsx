@@ -1,8 +1,11 @@
 "use client";
 
 import ContestBody from "@/components/dashboard/contests/ContestBody";
+import Empty from "@/components/Empty";
+import LoadingList from "@/components/LoadingList";
 import axiosInstance from "@/lib/axios";
-import { Maybe } from "@/types/common";
+import { getErrorMessage } from "@/lib/common";
+import { Maybe, TranslateKey } from "@/types/common";
 import { ContestType } from "@/types/schemas";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -14,10 +17,10 @@ const EditContest = () => {
   const [data, setData] = useState<Maybe<ContestType>>(null);
 
   const fetchData = async (id: string) => {
-    const handleError = () => {
+    const handleError = (msg: Maybe<TranslateKey>) => {
       setIsLoading(false);
       setData(null);
-      toast.error("Something went wrong! Please try again.");
+      toast.error(getErrorMessage(msg));
     };
 
     try {
@@ -26,11 +29,11 @@ const EditContest = () => {
       if (respData.success) {
         setData(respData.data);
       } else {
-        handleError();
+        handleError(respData.message);
       }
       setIsLoading(false);
     } catch (error) {
-      handleError();
+      handleError(null);
     }
   };
 
@@ -41,11 +44,16 @@ const EditContest = () => {
   }, [id]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingList />;
   }
 
   if (!data) {
-    return <div>No data</div>;
+    return (
+      <Empty
+        title="Contest not found"
+        description="Please refresh the page or try again later."
+      />
+    );
   }
 
   return <ContestBody data={data} />;

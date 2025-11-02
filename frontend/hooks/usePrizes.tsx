@@ -45,6 +45,7 @@ const usePrizes = () => {
         setHasMore(length >= LIMIT);
         setSkip(+skip + LIMIT);
       } else {
+        handleError();
       }
       setIsLoading(false);
     } catch (error) {

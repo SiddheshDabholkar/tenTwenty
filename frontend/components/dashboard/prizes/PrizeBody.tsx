@@ -10,7 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
 import axiosInstance from "@/lib/axios";
-import { Maybe } from "@/types/common";
+import { Maybe, TranslateKey } from "@/types/common";
+import { getErrorMessage } from "@/lib/common";
 
 type PrizeBodyProps = React.FC<{
   data: Maybe<PrizeType>;
@@ -25,8 +26,8 @@ const PrizeBody: PrizeBodyProps = ({ data }) => {
   const [isUpdating, setIsUpdating] = useState(false);
 
   const handleCreate = async () => {
-    const handleError = () => {
-      toast.error("Something went wrong! Please try again.");
+    const handleError = (msg: Maybe<TranslateKey>) => {
+      toast.error(getErrorMessage(msg));
       setIsCreating(false);
     };
     try {
@@ -38,17 +39,17 @@ const PrizeBody: PrizeBodyProps = ({ data }) => {
         toast.success("Prize updated successfully!");
         router.push("/dashboard/prizes");
       } else {
-        handleError();
+        handleError(respData.message);
       }
       setIsCreating(false);
     } catch (error) {
-      handleError();
+      handleError(null);
     }
   };
 
   const handleUpdate = async () => {
-    const handleError = () => {
-      toast.error("Something went wrong! Please try again.");
+    const handleError = (msg: Maybe<TranslateKey>) => {
+      toast.error(getErrorMessage(msg));
       setIsUpdating(false);
     };
     try {
@@ -62,11 +63,11 @@ const PrizeBody: PrizeBodyProps = ({ data }) => {
         toast.success("Prize updated successfully!");
         router.push("/dashboard/prizes");
       } else {
-        handleError();
+        handleError(respData.message);
       }
       setIsUpdating(false);
     } catch (error) {
-      handleError();
+      handleError(null);
     }
   };
 

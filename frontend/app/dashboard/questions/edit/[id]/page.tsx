@@ -1,8 +1,11 @@
 "use client";
 
 import QuestionsBody from "@/components/dashboard/questions/QuestionsBody";
+import Empty from "@/components/Empty";
+import LoadingList from "@/components/LoadingList";
 import axiosInstance from "@/lib/axios";
-import { Maybe } from "@/types/common";
+import { getErrorMessage } from "@/lib/common";
+import { Maybe, TranslateKey } from "@/types/common";
 import { QuestionType } from "@/types/schemas";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -14,10 +17,10 @@ const EditQuestion = () => {
   const [data, setData] = useState<Maybe<QuestionType>>(null);
 
   const fetchData = async (id: string) => {
-    const handleError = () => {
+    const handleError = (msg: Maybe<TranslateKey>) => {
+      toast.error(getErrorMessage(msg));
       setIsLoading(false);
       setData(null);
-      toast.error("Something went wrong! Please try again.");
     };
 
     try {
@@ -26,11 +29,11 @@ const EditQuestion = () => {
       if (respData.success) {
         setData(respData.data);
       } else {
-        handleError();
+        handleError(respData.message);
       }
       setIsLoading(false);
     } catch (error) {
-      handleError();
+      handleError(null);
     }
   };
 
@@ -41,11 +44,16 @@ const EditQuestion = () => {
   }, [id]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingList />;
   }
 
   if (!data) {
-    return <div>No data</div>;
+    return (
+      <Empty
+        title="Question not found"
+        description="Please refresh the page or try again later."
+      />
+    );
   }
 
   return <QuestionsBody data={data} />;

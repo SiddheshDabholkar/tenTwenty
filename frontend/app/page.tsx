@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { MaybeArray } from "@/types/common";
+import { Maybe, MaybeArray, TranslateKey } from "@/types/common";
 import { ContestType } from "@/types/schemas";
 import axiosInstance from "@/lib/axios";
 import { toast } from "sonner";
@@ -11,6 +11,9 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { getErrorMessage } from "@/lib/common";
+import LoadingList from "@/components/LoadingList";
+import Empty from "@/components/Empty";
 
 const LIMIT = 10;
 
@@ -24,8 +27,8 @@ const HomePage = () => {
     skip: number;
   };
   const fetchData = async ({ skip }: fetchDataProps) => {
-    const handleError = () => {
-      toast.error("Something went wrong. Please try again later.");
+    const handleError = (msg: Maybe<TranslateKey>) => {
+      toast.error(getErrorMessage(msg));
       setIsLoading(false);
     };
     try {
@@ -46,11 +49,12 @@ const HomePage = () => {
         setHasMore(length >= LIMIT);
         setSkip(+skip + LIMIT);
       } else {
+        handleError(data.message);
       }
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
-      handleError();
+      handleError(null);
     }
   };
 
@@ -79,9 +83,12 @@ const HomePage = () => {
       </p>
 
       {isLoading ? (
-        <p>loading....</p>
+        <LoadingList />
       ) : data.length === 0 ? (
-        <p>Empty data</p>
+        <Empty
+          title="Contests not found"
+          description="Please refresh the page or try again later."
+        />
       ) : (
         <>
           <InfiniteScroll

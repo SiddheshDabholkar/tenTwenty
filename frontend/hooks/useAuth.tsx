@@ -10,6 +10,7 @@ import {
 } from "@/lib/validation";
 import { handleTranslate } from "@/lib/translate";
 import { Maybe, TranslateKey } from "@/types/common";
+import { getErrorMessage } from "@/lib/common";
 
 type RegisterPayload = {
   email: string;
@@ -36,9 +37,7 @@ const useAuth = () => {
     lastName,
   }: RegisterPayload) => {
     const handleError = (msg: Maybe<TranslateKey>) => {
-      toast.error(
-        msg ? handleTranslate(msg) : "Something went wrong! Please try again."
-      );
+      toast.error(getErrorMessage(msg));
       setIsRegistering(false);
     };
     try {
@@ -74,9 +73,7 @@ const useAuth = () => {
 
   const handleLogin = async ({ email, password }: LoginPayload) => {
     const handleError = (msg: Maybe<TranslateKey>) => {
-      toast.error(
-        msg ? handleTranslate(msg) : "Something went wrong! Please try again."
-      );
+      toast.error(getErrorMessage(msg));
       setIsLoggingIn(false);
     };
     try {

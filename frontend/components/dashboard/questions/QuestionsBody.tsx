@@ -1,7 +1,7 @@
 "use client";
 
 import { QUESTIONS_TYPES } from "@/constant/enums";
-import { Maybe } from "@/types/common";
+import { Maybe, TranslateKey } from "@/types/common";
 import { QuestionType } from "@/types/schemas";
 import React, { useEffect, useState } from "react";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
@@ -15,7 +15,7 @@ import CheckboxOptions from "./CheckboxOptions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
-import { getAnswerOptions } from "@/lib/common";
+import { getAnswerOptions, getErrorMessage } from "@/lib/common";
 
 type QuestionsBodyProps = React.FC<{
   data: Maybe<QuestionType>;
@@ -43,8 +43,8 @@ const QuestionsBody: QuestionsBodyProps = ({ data }) => {
   const [isUpdating, setIsUpdating] = useState(false);
 
   const handleUpdate = async () => {
-    const handleError = () => {
-      toast.error("Something went wrong! Please try again.");
+    const handleError = (msg: Maybe<TranslateKey>) => {
+      toast.error(getErrorMessage(msg));
       setIsUpdating(false);
     };
     try {
@@ -59,17 +59,17 @@ const QuestionsBody: QuestionsBodyProps = ({ data }) => {
         toast.success("Question updated successfully!");
         router.push("/dashboard/questions");
       } else {
-        handleError();
+        handleError(respData.message);
       }
       setIsUpdating(false);
     } catch (error) {
-      handleError();
+      handleError(null);
     }
   };
 
   const handleCreate = async () => {
-    const handleError = () => {
-      toast.error("Something went wrong! Please try again.");
+    const handleError = (msg: Maybe<TranslateKey>) => {
+      toast.error(getErrorMessage(msg));
       setIsCreating(false);
     };
     try {
@@ -83,11 +83,11 @@ const QuestionsBody: QuestionsBodyProps = ({ data }) => {
         toast.success("Question created successfully!");
         router.push("/dashboard/questions");
       } else {
-        handleError();
+        handleError(respData.message);
       }
       setIsCreating(false);
     } catch (error) {
-      handleError();
+      handleError(null);
     }
   };
 
