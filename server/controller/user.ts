@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { formatResponse } from "../utils/common";
 import { USER_MESSAGES } from "../constant/message";
 import { User } from "../models/User";
+import { Wonby } from "../models/WonBy";
 
 const getUser = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -89,4 +90,21 @@ const updateUserRole = async (req: Request, res: Response) => {
   );
 };
 
-export { getUser, getAllUsers, updateUserRole };
+const getContestsWon = async (req: Request, res: Response) => {
+  const { skip = 0, limit = 10 } = req.query;
+  const userId = req?.user?._id;
+  const contestsWon = await Wonby.find({ userId })
+    .populate("contestId")
+    .skip(+skip)
+    .limit(+limit);
+  console.log({ contestsWon, userId });
+  return res.status(200).json(
+    formatResponse({
+      message: "Contests won fetched successfully",
+      data: contestsWon,
+      success: true,
+    })
+  );
+};
+
+export { getUser, getAllUsers, updateUserRole, getContestsWon };

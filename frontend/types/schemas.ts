@@ -31,6 +31,8 @@ type ContestType = Document &
     wonBy: MaybeString<WonbyType>;
     allowedRoles: USER_ROLE[];
     questions: MaybeArray<MaybeString<QuestionType>>;
+
+    hasSubmitted: boolean;
   };
 
 type QuestionType = Document &

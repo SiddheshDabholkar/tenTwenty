@@ -5,6 +5,7 @@ import { CONTEST_MESSAGES } from "../constant/message";
 import { Request, Response } from "express";
 import { handleContestEnd } from "../utils/contestScheduler";
 import { USER_ROLE } from "../constant/enums";
+import { Submission } from "../models/Submission";
 
 const createContest = async (req: Request, res: Response) => {
   const userId = req?.user?._id;
@@ -65,6 +66,7 @@ const createContest = async (req: Request, res: Response) => {
 
 const getContest = async (req: Request, res: Response) => {
   const { id } = req.params;
+  const userId = req?.user?._id;
   if (!id) {
     return res.status(400).json(
       formatResponse({
@@ -82,6 +84,17 @@ const getContest = async (req: Request, res: Response) => {
         path: "options",
       },
     });
+  const submission = await Submission.findOne({
+    contestId: id,
+    userId,
+  });
+  console.log({
+    userId,
+    contestId: id,
+    submission,
+    user: req.user,
+  });
+  const hasSubmitted = submission ? true : false;
   if (!contest) {
     return res.status(400).json(
       formatResponse({
@@ -96,11 +109,16 @@ const getContest = async (req: Request, res: Response) => {
   const contestStartUTC = new Date(contest.startDateTime);
   const contestEndUTC = new Date(contest.endDateTime);
 
+  const contestObject = contest.toJSON();
+
   if (nowUTC < contestStartUTC) {
     return res.status(200).json(
       formatResponse({
         message: CONTEST_MESSAGES.CONTEST_NOT_STARTED,
-        data: contest,
+        data: {
+          ...contestObject,
+          hasSubmitted,
+        },
         success: true,
       })
     );
@@ -110,7 +128,10 @@ const getContest = async (req: Request, res: Response) => {
     return res.status(200).json(
       formatResponse({
         message: CONTEST_MESSAGES.CONTEST_ENDED,
-        data: contest,
+        data: {
+          ...contestObject,
+          hasSubmitted,
+        },
         success: true,
       })
     );
@@ -119,7 +140,10 @@ const getContest = async (req: Request, res: Response) => {
   return res.status(200).json(
     formatResponse({
       message: CONTEST_MESSAGES.CONTEST_FETCH_SUCCESS,
-      data: contest,
+      data: {
+        ...contestObject,
+        hasSubmitted,
+      },
       success: true,
     })
   );

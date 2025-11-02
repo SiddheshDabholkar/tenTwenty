@@ -1,5 +1,6 @@
 "use client";
 
+import ContestedEarlier from "@/components/dashboard/ContestedEarlier";
 import ContestStatus from "@/components/dashboard/contests/ContestStatus";
 import Empty from "@/components/Empty";
 import LoadingList from "@/components/LoadingList";
@@ -195,6 +196,10 @@ const ContestDetails = () => {
       }
     });
   };
+
+  if (data?.hasSubmitted) {
+    return <ContestedEarlier />;
+  }
 
   const { isContestEnded, isContestsNotStarted } = getContestStatus(data);
 

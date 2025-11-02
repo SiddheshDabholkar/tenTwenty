@@ -13,7 +13,8 @@ type ContestCardProps = React.FC<{
   isPublic: boolean;
 }>;
 const ContestCard: ContestCardProps = ({ data, isAdmin, isPublic = false }) => {
-  const { status, statusColor } = getContestStatus(data);
+  const { status, statusColor, isContestEnded, isContestsNotStarted } =
+    getContestStatus(data);
   const url = isPublic
     ? `/auth/login`
     : `/dashboard/contests/details/${data._id}`;
@@ -51,9 +52,11 @@ const ContestCard: ContestCardProps = ({ data, isAdmin, isPublic = false }) => {
               </Link>
             )}
 
-            <Link href={joinUrl}>
-              <Button variant="secondary">Join</Button>
-            </Link>
+            {!isContestEnded && !isContestsNotStarted && (
+              <Link href={joinUrl}>
+                <Button variant="secondary">Join</Button>
+              </Link>
+            )}
           </div>
         </div>
       </Card>

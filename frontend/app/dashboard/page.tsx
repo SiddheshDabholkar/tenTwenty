@@ -1,5 +1,6 @@
 "use client";
 
+import ContestsWon from "@/components/dashboard/ContestsWon";
 import QuickActions from "@/components/dashboard/QuickActions";
 import { USER_ROLE } from "@/constant/enums";
 import { useUser } from "@/hooks/useUser";
@@ -27,6 +28,7 @@ const Dashboard = () => {
         Let’s make today productive — here’s what’s happening on your dashboard.
       </p>
       <QuickActions isAdmin={isAdmin} />
+      <ContestsWon />
     </div>
   );
 };

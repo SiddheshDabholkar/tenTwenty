@@ -14,7 +14,7 @@ const router = express.Router();
 
 router.post("/create", authMiddleware, adminMiddleware, createContest);
 router.put("/update", authMiddleware, adminMiddleware, updateContest);
-router.get("/:id", getContest);
+router.get("/:id", authMiddleware, getContest);
 router.get("/get/all", authMiddleware, adminMiddleware, getAllContest);
 router.delete("/delete/:id", authMiddleware, adminMiddleware, deleteContest);
 router.get("/get/by-user", authMiddleware, getUserContests);
